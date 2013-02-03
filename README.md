@@ -87,7 +87,7 @@ Your `URBSegmentedControl` can be customized using the following properties:
 The sample URBSegmentedControlDemo project uses the following icons from their respective authors (all from [The Noun Project](http://thenounproject.com) ):
 
 - [Snowboarder](http://thenounproject.com/noun/bike-hop/#icon-No2042) designed by [Vlad Likh](http://thenounproject.com/likh.v) from The Noun Project (under public domain)
-- [Mountains](http://thenounproject.com/noun/mountains/#icon-No2469) designed by Chris Cole(http://thenounproject.com/hellochriscole) from The Noun Project
+- [Mountains](http://thenounproject.com/noun/mountains/#icon-No2469) designed by [Chris Cole](http://thenounproject.com/hellochriscole) from The Noun Project
 - [Bike Hop](http://thenounproject.com/noun/bike-hop/#icon-No1889) designed by [Alfonso Melolonta Urbán](http://thenounproject.com/melolonta) from The Noun Project
 
 ## License
