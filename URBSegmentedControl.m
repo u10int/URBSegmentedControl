@@ -280,31 +280,26 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	CGFloat stroke = 2.0;
 	CGFloat radius = self.cornerRadius;
 	
-	//// General Declarations
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	
-	//// Color Declarations
+	// colors
 	UIColor* baseGradientTopColor = [UIColor colorWithRed: 0.376 green: 0.376 blue: 0.376 alpha: 1];
 	UIColor* baseGradientBottomColor = [UIColor colorWithRed: 0.256 green: 0.256 blue: 0.256 alpha: 1];
 	UIColor* baseStrokeColor = [UIColor colorWithRed: 0.466 green: 0.466 blue: 0.466 alpha: 1];
 	
-	//// Gradient Declarations
-	NSArray* baseGradientColors = [NSArray arrayWithObjects:
-								   (id)baseGradientTopColor.CGColor,
-								   (id)baseGradientBottomColor.CGColor, nil];
+	// gradients
+	NSArray* baseGradientColors = @[(id)baseGradientTopColor.CGColor, (id)baseGradientBottomColor.CGColor];
 	CGFloat baseGradientLocations[] = {0, 1};
 	CGGradientRef baseGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)baseGradientColors, baseGradientLocations);
 	
-	//// Shadow Declarations
+	// shadows
 	UIColor* baseInnerShadow = [UIColor blackColor];
 	CGSize baseInnerShadowOffset = CGSizeMake(0.1, 1.1);
 	CGFloat baseInnerShadowBlurRadius = 3;
 	
-	
-	//// Background
 	{
-		//// BackgroundBase Drawing
+		// base path
 		CGRect backgroundBaseRect = CGRectMake(CGRectGetMinX(frame) + stroke / 2.0, CGRectGetMinY(frame) + stroke / 2.0, size.width - stroke, size.height - stroke);
 		UIBezierPath* backgroundBasePath = [UIBezierPath bezierPathWithRoundedRect: backgroundBaseRect cornerRadius:radius];
 		CGContextSaveGState(context);
@@ -315,7 +310,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 									0);
 		CGContextRestoreGState(context);
 		
-		////// BackgroundBase Inner Shadow
+		// inner shadow
 		CGRect backgroundBaseBorderRect = CGRectInset([backgroundBasePath bounds], -baseInnerShadowBlurRadius, -baseInnerShadowBlurRadius);
 		backgroundBaseBorderRect = CGRectOffset(backgroundBaseBorderRect, -baseInnerShadowOffset.width, -baseInnerShadowOffset.height);
 		backgroundBaseBorderRect = CGRectInset(CGRectUnion(backgroundBaseBorderRect, [backgroundBasePath bounds]), -1, -1);
@@ -346,8 +341,6 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		[backgroundBasePath stroke];
 	}
 	
-	
-	//// Cleanup
 	CGGradientRelease(baseGradient);
 	CGColorSpaceRelease(colorSpace);
 	
@@ -598,44 +591,38 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	CGFloat radius = 2.0;
 	CGRect frame = CGRectMake(0, 0, size.width, size.height);
 	
-	//// General Declarations
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	
-	//// Color Declarations
+	// colors
 	UIColor* segmentStrokeColor = [UIColor colorWithRed: 0.58 green: 0.067 blue: 0 alpha: 1];
 	UIColor* segmentGradientTopColor = [UIColor colorWithRed: 0.89 green: 0.128 blue: 0.117 alpha: 1];
 	UIColor* segmentGradientBottomColor = [UIColor colorWithRed: 0.743 green: 0.1 blue: 0.06 alpha: 1];
 	UIColor* segmentHighlight = [UIColor colorWithRed: 1 green: 1 blue: 1 alpha: 0.7];
 	
-	//// Gradient Declarations
+	// gradients
 	NSArray* segmentGradientColors = @[(id)segmentGradientTopColor.CGColor, (id)segmentGradientBottomColor.CGColor];
 	CGFloat segmentGradientLocations[] = {0, 1};
 	CGGradientRef segmentGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)segmentGradientColors, segmentGradientLocations);
 	
-	//// Shadow Declarations
+	// shadows
 	CGSize segmentHighlightOffset = CGSizeMake(0.1, 1.1);
 	CGFloat segmentHighlightBlurRadius = 2;
 	UIColor* segmentShadow = [UIColor blackColor];
 	CGSize segmentShadowOffset = CGSizeMake(0.1, -0.1);
 	CGFloat segmentShadowBlurRadius = 5;
 	
-	
-	//// Segment
 	{
 		CGContextSaveGState(context);
         CGContextSetShadowWithColor(context, segmentShadowOffset, segmentShadowBlurRadius, segmentShadow.CGColor);
-		
 		CGContextBeginTransparencyLayer(context, NULL);
 		
-		
-		//// SegmentBaseOuter Drawing
+		// outer path
 		UIBezierPath* segmentBaseOuterPath = [UIBezierPath bezierPathWithRoundedRect: CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(frame), CGRectGetWidth(frame), CGRectGetHeight(frame)) cornerRadius:radius];
 		[segmentStrokeColor setFill];
 		[segmentBaseOuterPath fill];
 		
-		
-		//// SegmentBase Drawing
+		// inner path
 		CGRect segmentBaseRect = CGRectMake(CGRectGetMinX(frame) + stroke, CGRectGetMinY(frame) + stroke, CGRectGetWidth(frame) - stroke * 2.0, CGRectGetHeight(frame) - stroke * 2.0);
 		UIBezierPath* segmentBasePath = [UIBezierPath bezierPathWithRoundedRect: segmentBaseRect cornerRadius:radius];
 		CGContextSaveGState(context);
@@ -646,7 +633,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 									0);
 		CGContextRestoreGState(context);
 		
-		////// SegmentBase Inner Shadow
+		// inner shadow
 		CGRect segmentBaseBorderRect = CGRectInset([segmentBasePath bounds], -segmentHighlightBlurRadius, -segmentHighlightBlurRadius);
 		segmentBaseBorderRect = CGRectOffset(segmentBaseBorderRect, -segmentHighlightOffset.width, -segmentHighlightOffset.height);
 		segmentBaseBorderRect = CGRectInset(CGRectUnion(segmentBaseBorderRect, [segmentBasePath bounds]), -1, -1);
@@ -672,14 +659,10 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		}
 		CGContextRestoreGState(context);
 		
-		
-		
 		CGContextEndTransparencyLayer(context);
 		CGContextRestoreGState(context);
 	}
-	
 	 
-	//// Cleanup
 	CGGradientRelease(segmentGradient);
 	CGColorSpaceRelease(colorSpace);
 	

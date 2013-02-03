@@ -1,0 +1,45 @@
+# XCode 4 .gitignore Template
+# Originally created by Gary Longsine
+# Extended for XCode 4 by Tod Karpinski
+# Compiled by Warren Moore
+
+# Mac OS X Finder and whatnot
+.DS_Store
+
+# Local assets
+_assets
+
+# Sparkle distribution Private Key
+dsa_priv.pem
+
+# XCode (and ancestors) per-user config
+*.mode1
+*.mode1v3
+*.mode2v3
+*.perspective
+*.perspectivev3
+*.pbxuser
+*.xcworkspace/
+xcuserdata/
+
+# Generated files
+VersionX-revision.h
+
+# build products
+build/
+*.[oa]
+
+# Other source repository archive directories (protects when importing)
+.hg
+.svn
+CVS
+
+# Automatic backup files
+*~.nib
+*.swp
+*.orig
+*~
+*(Autosaved).rtfd/
+Backup[ ]of[ ]*.pages/
+Backup[ ]of[ ]*.key/
+Backup[ ]of[ ]*.numbers/
