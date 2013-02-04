@@ -213,7 +213,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 - (void)removeAllSegments {
 	[self.items makeObjectsPerformSelector:@selector(removeFromSuperview)];
 	[self.items removeAllObjects];
-	self.selectedSegmentIndex = -1;
+	_selectedSegmentIndex = -1;
 	[self setNeedsLayout];
 }
 
