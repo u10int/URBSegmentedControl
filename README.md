@@ -99,8 +99,8 @@ The sample URBSegmentedControlDemo project uses the following icons from their r
 
 ## License
 
-This code is distributed under the terms and conditions of the MIT license. Review the full [LICENSE](u10int/URBSegmentedControl/blob/master/LICENSE) for all the details.
+This code is distributed under the terms and conditions of the MIT license. Review the full [LICENSE](LICENSE) for all the details.
 
 ## Support/Contact
 
-Think you found a bug or just have a feature request? Just [post it as an issue](u10int/URBSegmentedControl/issues), but make sure to review the existing issues first to avoid duplicates. You can also hit me up at [@u10int](http://twitter.com/u10int) for anything else, or to let me know how you're using this component. Thanks!
+Think you found a bug or just have a feature request? Just [post it as an issue](https://github.com/u10int/URBSegmentedControl/issues), but make sure to review the existing issues first to avoid duplicates. You can also hit me up at [@u10int](http://twitter.com/u10int) for anything else, or to let me know how you're using this component. Thanks!
