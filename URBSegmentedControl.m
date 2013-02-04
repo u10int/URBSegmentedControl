@@ -49,6 +49,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		
 		[self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 		
+		self.frame = CGRectMake(10.0, 0.0, kURBDefaultSize.width, kURBDefaultSize.height);
 		self.backgroundColor = [UIColor clearColor];
 		self.imageColor = [UIColor grayColor];
 		self.selectedImageColor = [UIColor whiteColor];
