@@ -17,6 +17,10 @@
 	
 	UIViewController *viewController = [[UIViewController alloc] initWithNibName:nil bundle:nil];
 	
+	// use UIAppearance to set styles on control
+	[[URBSegmentedControl appearance] setSegmentBackgroundColor:[UIColor greenColor]];
+	
+	
 	// items to be used for each segment (same as UISegmentControl) for all instances
 	NSArray *titles = [NSArray arrayWithObjects:[@"Item 1" uppercaseString], [@"Item 2" uppercaseString], [@"Item 3" uppercaseString], nil];
 	NSArray *icons = [NSArray arrayWithObjects:[UIImage imageNamed:@"mountains.png"], [UIImage imageNamed:@"snowboarder.png"], [UIImage imageNamed:@"biker.png"], nil];
@@ -27,6 +31,7 @@
 	URBSegmentedControl *control = [[URBSegmentedControl alloc] initWithItems:titles];
 	control.frame = CGRectMake(10.0, 10.0, 300.0, 40.0);
 	control.selectedSegmentIndex = 0;
+	control.segmentBackgroundColor = [UIColor blueColor];
 	[viewController.view addSubview:control];
 	
 	// UIKit method of handling value changes

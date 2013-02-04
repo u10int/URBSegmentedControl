@@ -29,7 +29,9 @@ typedef void (^URBSegmentedControlBlock)(NSInteger index, URBSegmentedControl *s
 
 @property (nonatomic, copy) URBSegmentedControlBlock controlEventBlock;
 
-@property (nonatomic, strong) UIColor *backgroundColor;
+@property (nonatomic, strong) UIColor *baseColor;
+@property (nonatomic, strong) UIColor *strokeColor;
+@property (nonatomic, assign) CGFloat strokeWidth;
 @property (nonatomic) CGFloat cornerRadius;
 
 ///----------------------------
@@ -46,6 +48,7 @@ typedef void (^URBSegmentedControlBlock)(NSInteger index, URBSegmentedControl *s
 - (void)insertSegmentWithTitle:(NSString *)title image:(UIImage *)image atIndex:(NSUInteger)segment animated:(BOOL)animated;
 - (void)setTextAttributes:(NSDictionary *)textAttributes forState:(UIControlState)state UI_APPEARANCE_SELECTOR;
 - (void)setImageColor:(UIColor *)imageColor forState:(UIControlState)state UI_APPEARANCE_SELECTOR;
+- (void)setSegmentBackgroundColor:(UIColor *)segmentBackgroundColor UI_APPEARANCE_SELECTOR;
 
 - (void)setControlEventBlock:(URBSegmentedControlBlock)controlEventBlock;
 
