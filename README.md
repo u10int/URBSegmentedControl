@@ -85,7 +85,8 @@ Your `URBSegmentedControl` can be customized using the following properties:
 
 ## TODO
 
-- Support setting images to use for background and segment states
+- Support setting images to use for background and segment states instead of drawing in CoreGraphics within the class
+- Support for UISegmentedControl's `momentary` mode
 - Better support for customization using UIAppearance
 - Support installation via CocoaPods
 
