@@ -467,6 +467,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 
 @implementation URBSegmentView {
 	BOOL _hasDrawnImages;
+	BOOL _adjustInsetsForSize;
 }
 
 + (void)initialize {
@@ -513,6 +514,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		self.imageBackgroundColor = [UIColor redColor];
 		
 		_hasDrawnImages = NO;
+		_adjustInsetsForSize = YES;
 	}
 	return self;
 }
@@ -545,7 +547,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	_viewLayout = viewLayout;
 	
 	if (viewLayout == URBSegmentViewLayoutVertical) {
-		self.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 3.0, 0);
+		self.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 12.0, 0);
 		self.imageEdgeInsets = UIEdgeInsetsMake(8.0f, 8.0, 20.0f, 8.0);
 		self.contentEdgeInsets = UIEdgeInsetsMake(10.0f, 10.0f, 0.0f, 10.0f);
 	}
@@ -559,7 +561,21 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 - (void)layoutSubviews {
 	[super layoutSubviews];
 	
-	if (CGSizeEqualToSize(self.bounds.size, CGSizeZero)) return;
+	if (CGSizeEqualToSize(self.bounds.size, CGSizeZero)) {
+		return;
+	}
+	// automatically reset title and image insets if this segment is below a certain size to prevent
+	// the image from getting too small
+	else if (_adjustInsetsForSize) {
+		if (self.viewLayout == URBSegmentViewLayoutVertical) {
+			if (CGRectGetHeight(self.bounds) / CGRectGetWidth(self.bounds) < 0.75) {
+				self.imageEdgeInsets = UIEdgeInsetsMake(5.0f, 5.0f, 8.0f, 5.0f);
+				self.contentEdgeInsets = UIEdgeInsetsMake(6.0f, 6.0f, 0.0f, 6.0f);
+				self.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 3.0, 0);
+			}
+			_adjustInsetsForSize = NO;
+		}
+	}
 		
 	// don't draw background images until we have a valid size so that our vertical gradients display properly.
 	if (!_hasDrawnImages) {
@@ -579,7 +595,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 			
 			// title should start at bottom of content area with bottom inset
 			CGRect titleFrame = CGRectMake(CGRectGetMinX(frame), 0, CGRectGetWidth(frame), titleSize.height);
-			titleFrame.origin.y = CGRectGetHeight(frame) - self.titleEdgeInsets.bottom - titleSize.height;
+			titleFrame.origin.y = CGRectGetMaxY(frame) - self.titleEdgeInsets.bottom - titleSize.height;
 			self.titleLabel.frame = titleFrame;
 		}
 		else {
