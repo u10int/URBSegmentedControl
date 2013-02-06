@@ -30,7 +30,6 @@
 	//
 	URBSegmentedControl *control = [[URBSegmentedControl alloc] initWithItems:titles];
 	control.frame = CGRectMake(10.0, 10.0, 300.0, 40.0);
-	control.selectedSegmentIndex = 0;
 	control.segmentBackgroundColor = [UIColor blueColor];
 	[viewController.view addSubview:control];
 	
@@ -46,7 +45,6 @@
 	//
 	URBSegmentedControl *iconControl = [[URBSegmentedControl alloc] initWithItems:titles];
 	iconControl.frame = CGRectMake(10.0, CGRectGetMaxY(control.frame) + 20.0, 300.0, 40.0);
-	iconControl.selectedSegmentIndex = 0;
 	[viewController.view addSubview:iconControl];
 	
 	// set icons for each segment
