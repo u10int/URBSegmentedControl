@@ -81,6 +81,15 @@ Your `URBSegmentedControl` can be customized using the following properties:
 
 // segment styles
 @property (nonatomic, strong) UIColor *segmentBackgroundColor;		// default [UIColor redColor]
+@property (nonatomic, strong) UIColor *imageColor;					// default [UIColor grayColor]
+@property (nonatomic, strong) UIColor *selectedImageColor;			// default [UIColor whiteColor]
+```
+
+By default, your images will be tinted with the colors you define using the `imageColor` and `selectedImageColor` properties. If you would rather keep your images in their original format, just set these color properties to `nil`:
+
+```objective-c
+control.imageColor = nil;
+control.selectedImageColor = nil;
 ```
 
 ## TODO
