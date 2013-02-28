@@ -33,6 +33,9 @@ typedef void (^URBSegmentedControlBlock)(NSInteger index, URBSegmentedControl *s
 @property (nonatomic, strong) UIColor *strokeColor;
 @property (nonatomic, assign) CGFloat strokeWidth;
 @property (nonatomic) CGFloat cornerRadius;
+@property (nonatomic) UIEdgeInsets segmentEdgeInsets;
+@property (nonatomic, strong) NSDictionary *segmentTextAttributes;
+@property (nonatomic, strong) NSDictionary *segmentTextAttributesForDisabled;
 
 ///----------------------------
 /// @name Segment Customization

@@ -25,8 +25,6 @@
 @interface URBSegmentedControl ()
 @property (nonatomic, strong) NSMutableArray *items;
 @property (nonatomic, strong) UIImageView *backgroundView;
-@property (nonatomic) UIEdgeInsets segmentEdgeInsets;
-@property (nonatomic, strong) NSDictionary *segmentTextAttributes;
 - (void)layoutSegments;
 - (void)handleSelect:(URBSegmentView *)segmentView;
 - (NSInteger)firstEnabledSegmentIndexNearIndex:(NSUInteger)index;
@@ -142,6 +140,9 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	segmentView.viewLayout = self.segmentViewLayout;
 	if (self.segmentTextAttributes) {
 		[segmentView setTextAttributes:self.segmentTextAttributes forState:UIControlStateNormal];
+	}
+	if (self.segmentTextAttributesForDisabled) {
+		[segmentView setTextAttributes:self.segmentTextAttributesForDisabled forState:UIControlStateDisabled];
 	}
 	
 	// set custom styles if defined
@@ -310,7 +311,15 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 #pragma mark - Customization
 
 - (void)setTextAttributes:(NSDictionary *)textAttributes forState:(UIControlState)state {
-	self.segmentTextAttributes = textAttributes;
+    if(state==UIControlStateDisabled){
+        self.segmentTextAttributesForDisabled = textAttributes;
+    }else{
+        self.segmentTextAttributes = textAttributes;
+    }
+    
+    [self.items enumerateObjectsUsingBlock:^(URBSegmentView *segmentView, NSUInteger idx, BOOL *stop) {
+        [segmentView setTextAttributes:textAttributes forState:state];
+    }];
 }
 
 - (void)setSegmentBackgroundColor:(UIColor *)segmentBackgroundColor {
