@@ -18,6 +18,7 @@
 @property (nonatomic, strong) UIColor *imageBackgroundColor;
 @property (nonatomic, strong) UIColor *selectedImageBackgroundColor;
 @property (nonatomic, assign) CGFloat cornerRadius;
+@property (nonatomic, assign) BOOL gradient;
 - (void)setTextAttributes:(NSDictionary *)textAttributes forState:(UIControlState)state;
 - (void)updateBackgrounds;
 @end
@@ -29,9 +30,9 @@
 @property (nonatomic, strong) NSDictionary *segmentTextAttributes;
 - (void)layoutSegments;
 - (void)handleSelect:(URBSegmentView *)segmentView;
-- (NSInteger)firstEnabledSegmentIndexNearIndex:(NSUInteger)index;
+- (NSInteger)firstSegmentIndexNearIndex:(NSUInteger)index enabled:(BOOL)enabled;
 - (UIImage *)defaultBackgroundImage;
-@end 
+@end
 
 static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 
@@ -135,8 +136,20 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	URBSegmentView *segmentView = [URBSegmentView new];
 	[segmentView setTitle:title forState:UIControlStateNormal];
 	[segmentView setImage:[image imageTintedWithColor:self.imageColor] forState:UIControlStateNormal];
+	[segmentView setImage:[image imageTintedWithColor:[self.imageColor adjustBrightness:1.2]] forState:UIControlStateHighlighted];
 	[segmentView setImage:[image imageTintedWithColor:self.selectedImageColor] forState:UIControlStateSelected];
+	[segmentView setImage:[image imageTintedWithColor:[self.selectedImageColor adjustBrightness:0.8]] forState:UIControlStateSelected|UIControlStateHighlighted];
 	[segmentView addTarget:self action:@selector(handleSelect:) forControlEvents:UIControlEventTouchUpInside];
+	
+	// set insets if set
+	if (!UIEdgeInsetsEqualToEdgeInsets(self.contentEdgeInsets, UIEdgeInsetsZero))
+		segmentView.contentEdgeInsets = self.contentEdgeInsets;
+	
+	if (!UIEdgeInsetsEqualToEdgeInsets(self.titleEdgeInsets, UIEdgeInsetsZero))
+		segmentView.titleEdgeInsets = self.titleEdgeInsets;
+	
+	if (!UIEdgeInsetsEqualToEdgeInsets(self.imageEdgeInsets, UIEdgeInsetsZero))
+		segmentView.imageEdgeInsets = self.imageEdgeInsets;
 	
 	// style the segment
 	segmentView.viewLayout = self.segmentViewLayout;
@@ -179,6 +192,47 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	}
 }
 
+- (void)setSegmentBackgroundColor:(UIColor *)segmentBackgroundColor atIndex:(NSUInteger)segment {
+	URBSegmentView *segmentView = [self segmentAtIndex:segment];
+	if (segmentView) {
+		segmentView.imageBackgroundColor = segmentBackgroundColor;
+	}
+}
+
+- (void)setContentEdgeInsets:(UIEdgeInsets)contentEdgeInsets {
+	_contentEdgeInsets = contentEdgeInsets;
+	
+	[self.items enumerateObjectsUsingBlock:^(URBSegmentView *segmentView, NSUInteger idx, BOOL *stop) {
+		segmentView.contentEdgeInsets = contentEdgeInsets;
+	}];
+}
+
+- (void)setTitleEdgeInsets:(UIEdgeInsets)titleEdgeInsets {
+	_titleEdgeInsets = titleEdgeInsets;
+	
+	[self.items enumerateObjectsUsingBlock:^(URBSegmentView *segmentView, NSUInteger idx, BOOL *stop) {
+		segmentView.titleEdgeInsets = titleEdgeInsets;
+	}];
+}
+
+- (void)setImageEdgeInsets:(UIEdgeInsets)imageEdgeInsets {
+	_imageEdgeInsets = imageEdgeInsets;
+	
+	[self.items enumerateObjectsUsingBlock:^(URBSegmentView *segmentView, NSUInteger idx, BOOL *stop) {
+		segmentView.imageEdgeInsets = imageEdgeInsets;
+	}];
+}
+
+- (void)setGradient:(BOOL)gradient {
+	if (gradient != _gradient) {
+		_gradient = gradient;
+		
+		[self.items enumerateObjectsUsingBlock:^(URBSegmentView *segmentView, NSUInteger idx, BOOL *stop) {
+			segmentView.gradient = gradient;
+		}];
+	}
+}
+
 #pragma mark - UIKit API Overrides
 
 - (void)insertSegmentWithTitle:(NSString *)title atIndex:(NSUInteger)segment animated:(BOOL)animated {
@@ -202,11 +256,11 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 			changed = YES;
 		}
 		else if (self.selectedSegmentIndex == segment) {
-			self.selectedSegmentIndex = [self firstEnabledSegmentIndexNearIndex:self.selectedSegmentIndex];
+			self.selectedSegmentIndex = [self firstSegmentIndexNearIndex:self.selectedSegmentIndex enabled:YES];
 			changed = YES;
 		}
 		else if (self.selectedSegmentIndex > segment) {
-			self.selectedSegmentIndex = [self firstEnabledSegmentIndexNearIndex:self.selectedSegmentIndex];
+			self.selectedSegmentIndex = [self firstSegmentIndexNearIndex:self.selectedSegmentIndex enabled:YES];
 		}
 		
 		_lastSelectedSegmentIndex = self.selectedSegmentIndex;
@@ -274,7 +328,8 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		if (_selectedSegmentIndex >= 0)
 			((URBSegmentView *)[self segmentAtIndex:_selectedSegmentIndex]).selected = NO;
 		
-		((URBSegmentView *)[self segmentAtIndex:selectedSegmentIndex]).selected = YES;
+		[self segmentAtIndex:selectedSegmentIndex].selected = YES;
+		
 		_lastSelectedSegmentIndex = _selectedSegmentIndex;
 		_selectedSegmentIndex = selectedSegmentIndex;
 		
@@ -330,7 +385,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		UIColor *color = (state == UIControlStateSelected) ? self.selectedImageColor : self.imageColor;
 		
 		[segmentView setImage:[image imageTintedWithColor:color] forState:state];
-
+		
 	}];
 }
 
@@ -424,18 +479,19 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	return [self.items objectAtIndex:index];
 }
 
-- (NSInteger)firstEnabledSegmentIndexNearIndex:(NSUInteger)index {
+- (NSInteger)firstSegmentIndexNearIndex:(NSUInteger)index enabled:(BOOL)enabled {
 	for (int i = index; i < self.items.count; i++) {
-		if (((URBSegmentView *)[self.items objectAtIndex:i]).enabled) {
+		if (((URBSegmentView *)[self.items objectAtIndex:i]).enabled == enabled) {
 			return i;
 		}
 	}
 	
 	for (int i = index; i >= 0; i--) {
-		if (((URBSegmentView *)[self.items objectAtIndex:i]).enabled) {
+		if (((URBSegmentView *)[self.items objectAtIndex:i]).enabled == enabled) {
 			return i;
 		}
 	}
+	
 	return -1;
 }
 
@@ -500,6 +556,12 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	
 	[appearance setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
 	[appearance setTitleShadowColor:[UIColor blackColor] forState:UIControlStateSelected];
+	
+	// slightly adjust title colors for the highlight states
+	UIColor *titleColor = [appearance titleColorForState:UIControlStateNormal];
+	UIColor *selectedTitleColor = [appearance titleColorForState:UIControlStateSelected];
+	[appearance setTitleColor:[titleColor adjustBrightness:1.2] forState:UIControlStateHighlighted];
+	[appearance setTitleColor:[selectedTitleColor adjustBrightness:0.8] forState:UIControlStateSelected|UIControlStateHighlighted];
 }
 
 + (URBSegmentView *)new {
@@ -516,6 +578,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		self.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 		self.clipsToBounds = NO;
 		self.adjustsImageWhenHighlighted = NO;
+		self.gradient = YES;
 		
 		self.viewLayout = URBSegmentViewLayoutDefault;
 		
@@ -527,11 +590,22 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		self.imageView.layer.shadowOffset = CGSizeMake(0.0, 1.0);
 		self.imageView.layer.shadowRadius = 0;
 		self.imageView.layer.shadowOpacity = 1.0;
-		self.imageView.layer.masksToBounds = NO;
 		self.imageView.layer.shouldRasterize = YES;
 		self.imageView.layer.rasterizationScale = self.imageView.image.scale;
+		self.imageView.layer.masksToBounds = NO;
+		
+		self.layer.shadowColor = [UIColor blackColor].CGColor;
+		self.layer.shadowOffset = CGSizeMake(0.0, 0.5);
+		self.layer.shadowRadius = 2.0;
+		self.layer.shadowOpacity = 0.0;
+		self.layer.masksToBounds = NO;
 		
 		self.imageBackgroundColor = [UIColor redColor];
+		
+		// set default insets (for horizontal segment layout)
+		self.contentEdgeInsets = UIEdgeInsetsMake(4.0f, 8.0f, 4.0f, 8.0f);
+		self.titleEdgeInsets = UIEdgeInsetsMake(2.0, 0, 0, 0);
+		self.imageEdgeInsets = UIEdgeInsetsZero;
 		
 		_hasDrawnImages = NO;
 		_adjustInsetsForSize = YES;
@@ -563,87 +637,38 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
     }
 }
 
-- (void)setViewLayout:(URBSegmentViewLayout)viewLayout {
-	_viewLayout = viewLayout;
-	
-	if (viewLayout == URBSegmentViewLayoutVertical) {
-		self.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 12.0, 0);
-		self.imageEdgeInsets = UIEdgeInsetsMake(8.0f, 8.0, 20.0f, 8.0);
-		self.contentEdgeInsets = UIEdgeInsetsMake(10.0f, 10.0f, 0.0f, 10.0f);
-	}
-	else {
-		self.titleEdgeInsets = UIEdgeInsetsMake(2.0, 0, 0, 0);
-		self.imageEdgeInsets = UIEdgeInsetsZero;
-		self.contentEdgeInsets = UIEdgeInsetsMake(4.0f, 8.0f, 4.0f, 8.0f);
-	}
-}
-
 - (void)layoutSubviews {
 	[super layoutSubviews];
 	
 	if (CGSizeEqualToSize(self.bounds.size, CGSizeZero)) {
 		return;
 	}
-	// automatically reset title and image insets if this segment is below a certain size to prevent
-	// the image from getting too small
-	else if (_adjustInsetsForSize) {
-		if (self.viewLayout == URBSegmentViewLayoutVertical) {
-			if (CGRectGetHeight(self.bounds) / CGRectGetWidth(self.bounds) < 0.75) {
-				self.imageEdgeInsets = UIEdgeInsetsMake(5.0f, 5.0f, 8.0f, 5.0f);
-				self.contentEdgeInsets = UIEdgeInsetsMake(6.0f, 6.0f, 0.0f, 6.0f);
-				self.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 3.0, 0);
-			}
-			_adjustInsetsForSize = NO;
-		}
-	}
-		
+	
 	// don't draw background images until we have a valid size so that our vertical gradients display properly.
 	if (!_hasDrawnImages) {
 		_hasDrawnImages = YES;
 		[self updateBackgrounds];
 	}
 	
-	CGRect frame = UIEdgeInsetsInsetRect(self.bounds, self.contentEdgeInsets);
-	CGSize titleSize = [self.titleLabel.text sizeWithFont:self.titleLabel.font forWidth:frame.size.width lineBreakMode:self.titleLabel.lineBreakMode];
+	CGRect frame = UIEdgeInsetsInsetRect(self.bounds, self.contentEdgeInsets);	
+	CGRect imageFrame = UIEdgeInsetsInsetRect(frame, self.imageEdgeInsets);
+	CGRect titleFrame = UIEdgeInsetsInsetRect(frame, self.titleEdgeInsets);
 	
-	if (self.viewLayout == URBSegmentViewLayoutVertical) {
-		// only adjust layout if we have both a title and image, otherwise the default layout works
-		if (self.titleLabel.text.length > 0 && self.imageView.image) {
-			CGRect imageRect = frame;
-			imageRect.size.height = CGRectGetHeight(frame) - titleSize.height;
-			self.imageView.frame = UIEdgeInsetsInsetRect(imageRect, self.imageEdgeInsets);
-			
-			// title should start at bottom of content area with bottom inset
-			CGRect titleFrame = CGRectMake(CGRectGetMinX(frame), 0, CGRectGetWidth(frame), titleSize.height);
-			titleFrame.origin.y = CGRectGetMaxY(frame) - self.titleEdgeInsets.bottom - titleSize.height;
-			self.titleLabel.frame = titleFrame;
+	// split up available frame if we have both a label and image
+	if (self.titleLabel.text.length > 0 && self.imageView.image) {
+		if (self.viewLayout == URBSegmentViewLayoutVertical) {
+			CGFloat titleY = (CGRectGetHeight(frame) / 3.0) * 2.0;
+			imageFrame = UIEdgeInsetsInsetRect(imageFrame, UIEdgeInsetsMake(0, 0, CGRectGetHeight(frame) - titleY, 0));
+			titleFrame = UIEdgeInsetsInsetRect(titleFrame, UIEdgeInsetsMake(titleY, 0, 0, 0));
 		}
 		else {
-			CGRect titleFrame = self.titleLabel.frame;
-			titleFrame.size.width = frame.size.width;
-			titleFrame.origin.x = CGRectGetMinX(frame);
-			titleFrame.origin.y = CGRectGetMidY(self.bounds) - titleSize.height / 2.0;
-			self.titleLabel.frame = titleFrame;
+			CGFloat titleX = CGRectGetWidth(frame) / 3.0;
+			imageFrame = UIEdgeInsetsInsetRect(imageFrame, UIEdgeInsetsMake(0, 0, 0, CGRectGetWidth(frame) - titleX));
+			titleFrame = UIEdgeInsetsInsetRect(titleFrame, UIEdgeInsetsMake(0, titleX + 2.0, 0, 0));
 		}
 	}
-	else {
-		if (self.titleLabel.text.length > 0 && self.imageView.image) {
-			CGRect imageRect = frame;
-			imageRect.size.width = imageRect.size.height;
-			self.imageView.frame = imageRect;
-			
-			CGRect titleFrame = UIEdgeInsetsInsetRect(frame, self.titleEdgeInsets);
-			titleFrame.origin.x = CGRectGetMaxX(self.imageView.frame);
-			titleFrame.size.width = CGRectGetWidth(frame) - CGRectGetMinX(titleFrame);
-			self.titleLabel.frame = titleFrame;
-		}
-		else {
-			CGRect titleFrame = UIEdgeInsetsInsetRect(frame, self.titleEdgeInsets);
-			titleFrame.origin.x = CGRectGetMinX(frame);
-			titleFrame.size.width = frame.size.width;
-			self.titleLabel.frame = titleFrame;
-		}
-	}
+	self.imageView.frame = imageFrame;
+	self.titleLabel.frame = titleFrame;
 	
 	if (self.selected)
 		self.titleLabel.shadowOffset = CGSizeMake(0.0f, -0.5f);
@@ -666,11 +691,42 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	}
 }
 
+- (void)setSelected:(BOOL)selected {
+	[super setSelected:selected];
+	
+	if (selected)
+		self.layer.shadowOpacity = 0.8;
+	else
+		self.layer.shadowOpacity = 0;
+}
+
+- (void)setViewLayout:(URBSegmentViewLayout)viewLayout {
+	if (viewLayout != _viewLayout) {
+		_viewLayout = viewLayout;
+		
+		if (viewLayout == URBSegmentViewLayoutVertical) {
+			self.contentEdgeInsets = UIEdgeInsetsMake(10.0f, 10.0f, 0.0f, 10.0f);
+			self.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 12.0, 0);
+			self.imageEdgeInsets = UIEdgeInsetsMake(12.0f, 8.0, 6.0, 8.0);
+		}
+	}
+}
+
+- (void)setGradient:(BOOL)gradient {
+	if (gradient != _gradient) {
+		_gradient = gradient;
+		
+		if (_hasDrawnImages)
+			[self updateBackgrounds];
+	}
+}
+
 #pragma mark - Background Images
 
 - (void)updateBackgrounds {
 	[self setBackgroundImage:[self normalBackgroundImage] forState:UIControlStateNormal];
 	[self setBackgroundImage:[self selectedBackgroundImage] forState:UIControlStateSelected];
+	[self setBackgroundImage:[self selectedBackgroundImage] forState:UIControlStateSelected|UIControlStateHighlighted];
 }
 
 - (UIImage *)normalBackgroundImage {
@@ -678,7 +734,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 }
 
 - (UIImage *)selectedBackgroundImage {
-	CGSize size = self.bounds.size;
+	CGSize size = CGSizeMake(20.0, 20.0);
 	UIGraphicsBeginImageContextWithOptions(size, NO, 0.0f);
 	
 	CGFloat stroke = 2.0;
@@ -689,9 +745,9 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	
 	// colors
-	UIColor *segmentGradientTopColor = [self.imageBackgroundColor adjustBrightness:1.2];
-	UIColor *segmentGradientBottomColor = [self.imageBackgroundColor adjustBrightness:0.8];
-	UIColor *segmentStrokeColor = [self.imageBackgroundColor adjustBrightness:0.6];
+	UIColor *segmentGradientTopColor = (self.gradient) ? [self.imageBackgroundColor adjustBrightness:1.2] : self.imageBackgroundColor;
+	UIColor *segmentGradientBottomColor = (self.gradient) ? [self.imageBackgroundColor adjustBrightness:0.8] : self.imageBackgroundColor;
+	UIColor *segmentStrokeColor = [self.imageBackgroundColor adjustBrightness:0.5];
 	UIColor *segmentHighlight = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.7];
 	
 	// gradients
@@ -702,13 +758,10 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	// shadows
 	CGSize segmentHighlightOffset = CGSizeMake(0.1, 1.1);
 	CGFloat segmentHighlightBlurRadius = 2;
-	UIColor *segmentShadow = [UIColor blackColor];
-	CGSize segmentShadowOffset = CGSizeMake(0.1, -0.1);
-	CGFloat segmentShadowBlurRadius = 5;
 	
 	{
 		CGContextSaveGState(context);
-		CGContextSetShadowWithColor(context, segmentShadowOffset, segmentShadowBlurRadius, segmentShadow.CGColor);
+		//CGContextSetShadowWithColor(context, segmentShadowOffset, segmentShadowBlurRadius, segmentShadow.CGColor);
 		CGContextBeginTransparencyLayer(context, NULL);
 		
 		// outer path
@@ -756,7 +809,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		CGContextEndTransparencyLayer(context);
 		CGContextRestoreGState(context);
 	}
-	 
+	
 	CGGradientRelease(segmentGradient);
 	CGColorSpaceRelease(colorSpace);
 	
@@ -772,7 +825,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 @end
 
 
-#pragma mark - UIImage Category
+#pragma mark - UIImage+URBSegmentedControl
 
 @implementation UIImage (URBSegmentedControl)
 
@@ -803,12 +856,12 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 
 @end
 
-#pragma mark - UIColor Category
+#pragma mark - UIColor+URBSegmentedControl
 
 @implementation UIColor (URBSegmentedControl)
 
 - (UIColor *)adjustBrightness:(CGFloat)amount {
-	float h, s, b, a, w;	
+	float h, s, b, a, w;
 	
     if ([self getHue:&h saturation:&s brightness:&b alpha:&a]) {
 		b += (amount-1.0);

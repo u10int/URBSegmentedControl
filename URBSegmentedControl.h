@@ -42,10 +42,17 @@ typedef void (^URBSegmentedControlBlock)(NSInteger index, URBSegmentedControl *s
 @property (nonatomic, strong) UIColor *imageColor UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) UIColor *selectedImageColor UI_APPEARANCE_SELECTOR;
 
+@property (nonatomic, assign) UIEdgeInsets contentEdgeInsets;
+@property (nonatomic, assign) UIEdgeInsets titleEdgeInsets;
+@property (nonatomic, assign) UIEdgeInsets imageEdgeInsets;
+@property (nonatomic, assign) BOOL gradient;
+
 - (id)initWithTitles:(NSArray *)titles;
 - (id)initWithIcons:(NSArray *)icons;
 - (id)initWithTitles:(NSArray *)titles icons:(NSArray *)icons;
 - (void)insertSegmentWithTitle:(NSString *)title image:(UIImage *)image atIndex:(NSUInteger)segment animated:(BOOL)animated;
+- (void)setSegmentBackgroundColor:(UIColor *)segmentBackgroundColor atIndex:(NSUInteger)segment;
+
 - (void)setTextAttributes:(NSDictionary *)textAttributes forState:(UIControlState)state UI_APPEARANCE_SELECTOR;
 - (void)setImageColor:(UIColor *)imageColor forState:(UIControlState)state UI_APPEARANCE_SELECTOR;
 - (void)setSegmentBackgroundColor:(UIColor *)segmentBackgroundColor UI_APPEARANCE_SELECTOR;
