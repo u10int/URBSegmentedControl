@@ -18,7 +18,7 @@
 @property (nonatomic, strong) UIColor *imageBackgroundColor;
 @property (nonatomic, strong) UIColor *selectedImageBackgroundColor;
 @property (nonatomic, assign) CGFloat cornerRadius;
-@property (nonatomic, assign) BOOL gradient;
+@property (nonatomic, assign) BOOL showsGradient;
 - (void)setTextAttributes:(NSDictionary *)textAttributes forState:(UIControlState)state;
 - (void)updateBackgrounds;
 @end
@@ -223,12 +223,12 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	}];
 }
 
-- (void)setGradient:(BOOL)gradient {
-	if (gradient != _gradient) {
-		_gradient = gradient;
+- (void)setShowsGradient:(BOOL)showsGradient {
+	if (showsGradient != _showsGradient) {
+		_showsGradient = showsGradient;
 		
 		[self.items enumerateObjectsUsingBlock:^(URBSegmentView *segmentView, NSUInteger idx, BOOL *stop) {
-			segmentView.gradient = gradient;
+			segmentView.showsGradient = showsGradient;
 		}];
 	}
 }
@@ -578,7 +578,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		self.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 		self.clipsToBounds = NO;
 		self.adjustsImageWhenHighlighted = NO;
-		self.gradient = YES;
+		self.showsGradient = YES;
 		
 		self.viewLayout = URBSegmentViewLayoutDefault;
 		
@@ -712,9 +712,9 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	}
 }
 
-- (void)setGradient:(BOOL)gradient {
-	if (gradient != _gradient) {
-		_gradient = gradient;
+- (void)setShowsGradient:(BOOL)showsGradient {
+	if (showsGradient != _showsGradient) {
+		_showsGradient = showsGradient;
 		
 		if (_hasDrawnImages)
 			[self updateBackgrounds];
@@ -745,8 +745,8 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	
 	// colors
-	UIColor *segmentGradientTopColor = (self.gradient) ? [self.imageBackgroundColor adjustBrightness:1.2] : self.imageBackgroundColor;
-	UIColor *segmentGradientBottomColor = (self.gradient) ? [self.imageBackgroundColor adjustBrightness:0.8] : self.imageBackgroundColor;
+	UIColor *segmentGradientTopColor = (self.showsGradient) ? [self.imageBackgroundColor adjustBrightness:1.2] : self.imageBackgroundColor;
+	UIColor *segmentGradientBottomColor = (self.showsGradient) ? [self.imageBackgroundColor adjustBrightness:0.8] : self.imageBackgroundColor;
 	UIColor *segmentStrokeColor = [self.imageBackgroundColor adjustBrightness:0.5];
 	UIColor *segmentHighlight = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.7];
 	

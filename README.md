@@ -83,6 +83,7 @@ Your `URBSegmentedControl` can be customized using the following properties:
 @property (nonatomic, strong) UIColor *segmentBackgroundColor;		// default [UIColor redColor]
 @property (nonatomic, strong) UIColor *imageColor;					// default [UIColor grayColor]
 @property (nonatomic, strong) UIColor *selectedImageColor;			// default [UIColor whiteColor]
+@property (nonatomic, assign) BOOL showsGradient;					// determines if the segment background should have a gradient applied, default YES
 ```
 
 By default, your images will be tinted with the colors you define using the `imageColor` and `selectedImageColor` properties. If you would rather keep your images in their original format, just set these color properties to `nil`:
@@ -90,6 +91,14 @@ By default, your images will be tinted with the colors you define using the `ima
 ```objective-c
 control.imageColor = nil;
 control.selectedImageColor = nil;
+```
+
+In most cases, the default insets applied to the content, title and image for each segment will work. However, if your control is smaller or you wish to adjust the sizes of elements better, you can adjust the insets by setting the following properties on your instance:
+
+```objective-c
+@property (nonatomic, assign) UIEdgeInsets contentEdgeInsets;
+@property (nonatomic, assign) UIEdgeInsets titleEdgeInsets;
+@property (nonatomic, assign) UIEdgeInsets imageEdgeInsets;
 ```
 
 ## TODO

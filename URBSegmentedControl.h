@@ -45,7 +45,7 @@ typedef void (^URBSegmentedControlBlock)(NSInteger index, URBSegmentedControl *s
 @property (nonatomic, assign) UIEdgeInsets contentEdgeInsets;
 @property (nonatomic, assign) UIEdgeInsets titleEdgeInsets;
 @property (nonatomic, assign) UIEdgeInsets imageEdgeInsets;
-@property (nonatomic, assign) BOOL gradient;
+@property (nonatomic, assign) BOOL showsGradient;
 
 - (id)initWithTitles:(NSArray *)titles;
 - (id)initWithIcons:(NSArray *)icons;

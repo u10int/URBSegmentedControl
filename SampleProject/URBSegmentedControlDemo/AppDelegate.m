@@ -93,7 +93,7 @@
 	URBSegmentedControl *horizVerticalControl = [[URBSegmentedControl alloc] initWithTitles:titles icons:icons];
 	horizVerticalControl.frame = CGRectMake(10.0, CGRectGetMaxY(verticalControl.frame) + 20.0, 300.0, 80.0);
 	horizVerticalControl.segmentViewLayout = URBSegmentViewLayoutVertical;
-	horizVerticalControl.gradient = NO;
+	horizVerticalControl.showsGradient = NO;
 	horizVerticalControl.contentEdgeInsets = UIEdgeInsetsMake(6.0, 6.0, 6.0, 6.0);
 	horizVerticalControl.imageEdgeInsets = UIEdgeInsetsMake(6.0, 8.0, 8.0, 8.0);
 	horizVerticalControl.titleEdgeInsets = UIEdgeInsetsZero;
