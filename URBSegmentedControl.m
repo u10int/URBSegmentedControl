@@ -118,6 +118,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
+    _selectedSegmentIndex = -1;
     self = [super initWithCoder:aDecoder];
     if (self) {
         CGRect nibFrame = self.frame;
@@ -326,13 +327,14 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 
 - (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex {
 	if (_selectedSegmentIndex != selectedSegmentIndex) {
-		NSParameterAssert(selectedSegmentIndex < (NSInteger)self.items.count && selectedSegmentIndex >= 0);
+		NSParameterAssert(selectedSegmentIndex < (NSInteger)self.items.count);
 		
 		// deselect current segment if selected
 		if (_selectedSegmentIndex >= 0)
 			((URBSegmentView *)[self segmentAtIndex:_selectedSegmentIndex]).selected = NO;
 		
-		[self segmentAtIndex:selectedSegmentIndex].selected = YES;
+		if (selectedSegmentIndex >= 0)
+			((URBSegmentView *)[self segmentAtIndex:selectedSegmentIndex]).selected = YES;
 		
 		_lastSelectedSegmentIndex = _selectedSegmentIndex;
 		_selectedSegmentIndex = selectedSegmentIndex;
