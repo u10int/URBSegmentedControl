@@ -85,8 +85,18 @@
 	verticalIconControl.layoutOrientation = URBSegmentedControlOrientationVertical;
 	[viewController.view addSubview:verticalIconControl];
 	
-	
-	self.window.rootViewController = viewController;	
+    
+    //
+    // Show InitFromNibDemoViewController Button
+    //
+    UIButton *goNibViewButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    goNibViewButton.frame = CGRectMake(CGRectGetMaxX(verticalControl.frame) + 80.0, CGRectGetMaxY(verticalControl2.frame) + 20.0, 110.0, 44.0);
+    [goNibViewButton setTitle:@"Show nib" forState:UIControlStateNormal];
+    [goNibViewButton addTarget:self action:@selector(tapGoNibViewButton:) forControlEvents:UIControlEventTouchUpInside];
+	[viewController.view addSubview:goNibViewButton];
+    
+    
+	self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
@@ -94,6 +104,11 @@
 
 - (void)handleSelection:(id)sender {
 	NSLog(@"URBSegmentedControl: value changed");
+}
+
+- (void)tapGoNibViewButton:(id)sender {
+    UIViewController *nibViewController = [[UIViewController alloc] initWithNibName:@"InitFromNibDemoView" bundle:[NSBundle mainBundle]];
+    [(UINavigationController*)self.window.rootViewController pushViewController:nibViewController animated:YES];
 }
 
 @end

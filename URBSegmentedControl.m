@@ -267,7 +267,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 }
 
 - (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex {
-	if (_selectedSegmentIndex != selectedSegmentIndex) {
+	if (_selectedSegmentIndex != selectedSegmentIndex && self.items) {
 		NSParameterAssert(selectedSegmentIndex < (NSInteger)self.items.count);
 		
 		// deselect current segment if selected

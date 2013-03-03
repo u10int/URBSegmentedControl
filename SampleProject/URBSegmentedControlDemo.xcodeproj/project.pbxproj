@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D1A98FC16E310D1007F4A02 /* InitFromNibDemoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1D1A98FB16E310D1007F4A02 /* InitFromNibDemoView.xib */; };
 		2B3C328F16BEE3E800E4F9CD /* biker.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B3C328916BEE3E800E4F9CD /* biker.png */; };
 		2B3C329016BEE3E800E4F9CD /* biker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B3C328A16BEE3E800E4F9CD /* biker@2x.png */; };
 		2B3C329116BEE3E800E4F9CD /* mountains.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B3C328B16BEE3E800E4F9CD /* mountains.png */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1D1A98FB16E310D1007F4A02 /* InitFromNibDemoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InitFromNibDemoView.xib; sourceTree = "<group>"; };
 		2B3C328916BEE3E800E4F9CD /* biker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = biker.png; sourceTree = "<group>"; };
 		2B3C328A16BEE3E800E4F9CD /* biker@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "biker@2x.png"; sourceTree = "<group>"; };
 		2B3C328B16BEE3E800E4F9CD /* mountains.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mountains.png; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 			children = (
 				2B89937A16BC1E4400642D1F /* AppDelegate.h */,
 				2B89937B16BC1E4400642D1F /* AppDelegate.m */,
+				1D1A98FB16E310D1007F4A02 /* InitFromNibDemoView.xib */,
 				2B3C328816BEE3E800E4F9CD /* Resources */,
 				2B89937216BC1E4400642D1F /* Supporting Files */,
 			);
@@ -191,6 +194,7 @@
 				2B3C329216BEE3E800E4F9CD /* mountains@2x.png in Resources */,
 				2B3C329316BEE3E800E4F9CD /* snowboarder.png in Resources */,
 				2B3C329416BEE3E800E4F9CD /* snowboarder@2x.png in Resources */,
+				1D1A98FC16E310D1007F4A02 /* InitFromNibDemoView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
