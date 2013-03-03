@@ -274,7 +274,9 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		if (_selectedSegmentIndex >= 0)
 			((URBSegmentView *)[self segmentAtIndex:_selectedSegmentIndex]).selected = NO;
 		
-		((URBSegmentView *)[self segmentAtIndex:selectedSegmentIndex]).selected = YES;
+		if (selectedSegmentIndex >= 0)
+            ((URBSegmentView *)[self segmentAtIndex:selectedSegmentIndex]).selected = YES;
+        
 		_lastSelectedSegmentIndex = _selectedSegmentIndex;
 		_selectedSegmentIndex = selectedSegmentIndex;
 		
