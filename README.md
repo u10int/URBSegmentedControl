@@ -74,16 +74,17 @@ Your `URBSegmentedControl` can be customized using the following properties:
 
 ```objective-c
 // base styles
-@property (nonatomic, strong) UIColor *baseColor;		// default [UIColor colorWithRed:0.35 green:0.35 blue:0.35 alpha:1.0];
-@property (nonatomic, strong) UIColor *strokeColor;		// default [UIColor darkGrayColor]
-@property (nonatomic, assign) CGFloat strokeWidth;		// default 2.0
-@property (nonatomic) CGFloat cornerRadius;				// default 2.0
+@property (nonatomic, strong) UIColor *baseColor;				// default [UIColor colorWithWhite:0.3 alpha:1.0]
+@property (nonatomic, strong) UIColor *strokeColor;				// default [UIColor darkGrayColor]
+@property (nonatomic, assign) CGFloat strokeWidth;				// default 2.0
+@property (nonatomic) CGFloat cornerRadius;						// default 2.0
+@property (nonatomic, assign) UIEdgeInsets segmentEdgeInsets;	// default UIEdgeInsetsMake(4.0, 4.0, 4.0, 4.0)
 
 // segment styles
 @property (nonatomic, strong) UIColor *segmentBackgroundColor;		// default [UIColor redColor]
 @property (nonatomic, strong) UIColor *imageColor;					// default [UIColor grayColor]
 @property (nonatomic, strong) UIColor *selectedImageColor;			// default [UIColor whiteColor]
-@property (nonatomic, assign) BOOL showsGradient;					// determines if the segment background should have a gradient applied, default YES
+@property (nonatomic, assign) BOOL showsGradient;					// determines if the base and segment background should have a gradient applied, default YES
 ```
 
 By default, your images will be tinted with the colors you define using the `imageColor` and `selectedImageColor` properties. If you would rather keep your images in their original format, just set these color properties to `nil`:

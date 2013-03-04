@@ -26,8 +26,8 @@
 @interface URBSegmentedControl ()
 @property (nonatomic, strong) NSMutableArray *items;
 @property (nonatomic, strong) UIImageView *backgroundView;
-@property (nonatomic) UIEdgeInsets segmentEdgeInsets;
 @property (nonatomic, strong) NSDictionary *segmentTextAttributes;
+@property (nonatomic, strong) NSDictionary *segmentDisabledTextAttributes;
 - (void)layoutSegments;
 - (void)handleSelect:(URBSegmentView *)segmentView;
 - (NSInteger)firstSegmentIndexNearIndex:(NSUInteger)index enabled:(BOOL)enabled;
@@ -55,11 +55,12 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
     self.segmentEdgeInsets = UIEdgeInsetsMake(4.0f, 4.0f, 4.0f, 4.0f);
     
     // base styles
-    self.baseColor = [UIColor colorWithRed:0.35 green:0.35 blue:0.35 alpha:1.0];
+    self.baseColor = [UIColor colorWithWhite:0.3 alpha:1.0];
     self.strokeColor = [UIColor darkGrayColor];
     self.segmentBackgroundColor = nil;
     self.strokeWidth = 2.0f;
     self.cornerRadius = 4.0f;
+	self.showsGradient = YES;
     
     // layout
     self.layoutOrientation = URBSegmentedControlOrientationHorizontal;
@@ -116,16 +117,15 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	return self;
 }
 
-/** Initialize from nib file */
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
-    if (self){
+    if (self) {
         CGRect nibFrame = self.frame;
         [self initInternal];
         
-        //Restore nib settings
+        // restore nib settings
         self.frame = nibFrame;
-        for(NSInteger i=0; i<super.numberOfSegments; i++){
+        for (NSInteger i = 0; i < super.numberOfSegments; i++){
             [self insertSegmentWithTitle:[super titleForSegmentAtIndex:i] atIndex:i animated:NO];
         }
     }
@@ -153,8 +153,12 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	
 	// style the segment
 	segmentView.viewLayout = self.segmentViewLayout;
+	segmentView.showsGradient = self.showsGradient;
 	if (self.segmentTextAttributes) {
 		[segmentView setTextAttributes:self.segmentTextAttributes forState:UIControlStateNormal];
+	}
+	if (self.segmentDisabledTextAttributes) {
+		[segmentView setTextAttributes:self.segmentDisabledTextAttributes forState:UIControlStateDisabled];
 	}
 	
 	// set custom styles if defined
@@ -322,7 +326,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 
 - (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex {
 	if (_selectedSegmentIndex != selectedSegmentIndex) {
-		NSParameterAssert(selectedSegmentIndex < (NSInteger)self.items.count);
+		NSParameterAssert(selectedSegmentIndex < (NSInteger)self.items.count && selectedSegmentIndex >= 0);
 		
 		// deselect current segment if selected
 		if (_selectedSegmentIndex >= 0)
@@ -365,7 +369,14 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 #pragma mark - Customization
 
 - (void)setTextAttributes:(NSDictionary *)textAttributes forState:(UIControlState)state {
-	self.segmentTextAttributes = textAttributes;
+	if (state == UIControlStateDisabled)
+		self.segmentDisabledTextAttributes = textAttributes;
+	else
+		self.segmentTextAttributes = textAttributes;
+	
+	[self.items enumerateObjectsUsingBlock:^(URBSegmentView *segmentView, NSUInteger idx, BOOL *stop) {
+		[segmentView setTextAttributes:textAttributes forState:state];
+	}];
 }
 
 - (void)setSegmentBackgroundColor:(UIColor *)segmentBackgroundColor {
@@ -401,10 +412,10 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextRef context = UIGraphicsGetCurrentContext();
-	
+
 	// colors
-	UIColor* baseGradientTopColor = [self.baseColor adjustBrightness:1.1];
-	UIColor* baseGradientBottomColor = [self.baseColor adjustBrightness:0.9];
+	UIColor* baseGradientTopColor = (self.showsGradient) ? [self.baseColor adjustBrightness:1.1] : self.baseColor;
+	UIColor* baseGradientBottomColor = (self.showsGradient) ? [self.baseColor adjustBrightness:0.9] : self.baseColor;
 	UIColor* baseStrokeColor = self.strokeColor;
 	
 	// gradients
