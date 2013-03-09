@@ -318,6 +318,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 }
 
 - (void)setEnabled:(BOOL)enabled forSegmentAtIndex:(NSUInteger)segment {
+	[super setEnabled:enabled forSegmentAtIndex:segment];
 	[self segmentAtIndex:segment].enabled = enabled;
 }
 
