@@ -19,7 +19,19 @@ URBSegmentedControl
 
 ## Installation
 
-To use `URBSegmentedControl` in your own project:
+### Installing with CocoaPods
+
+[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries in your projects.
+
+#### Podfile
+
+```ruby
+platform :ios, '5.0'
+pod "URBSegmentedControl", "~> 1.0.0"
+```
+
+### Installing Manually
+
 - import `URBSegmentedControl.h` and `URBSegmentedControl.m` files into your project, and then include "`URBSegmentedControl.h`" where needed, or in your precompiled header
 - link against the `QuartzCore` framework by adding `QuartzCore.framework` to your project under `Build Phases` > `Link Binary With Libraries`.
 
@@ -107,7 +119,6 @@ In most cases, the default insets applied to the content, title and image for ea
 - Support setting images to use for background and segment states instead of drawing in CoreGraphics within the class
 - Support for UISegmentedControl's `momentary` mode
 - Better support for customization using UIAppearance
-- Support installation via CocoaPods
 
 ## Credits
 
