@@ -872,7 +872,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 @implementation UIColor (URBSegmentedControl)
 
 - (UIColor *)adjustBrightness:(CGFloat)amount {
-	float h, s, b, a, w;
+	CGFloat h, s, b, a, w;
 	
     if ([self getHue:&h saturation:&s brightness:&b alpha:&a]) {
 		b += (amount-1.0);
