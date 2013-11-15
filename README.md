@@ -23,12 +23,11 @@ URBSegmentedControl
 
 [CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries in your projects.
 
-#### Podfile
+Add the following to your `Podfile` and run `$ pod install`:
 
-```ruby
-platform :ios, '5.0'
-pod "URBSegmentedControl", "~> 1.0.0"
-```
+	pod "URBSegmentedControl"
+	
+If you don't have CocoaPods installed or integrated into your project, you can learn how to do via [CocoaPods](http://cocoapods.org/).
 
 ### Installing Manually
 
