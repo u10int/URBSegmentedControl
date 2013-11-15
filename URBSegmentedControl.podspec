@@ -14,6 +14,6 @@ Pod::Spec.new do |s|
 	s.platform			= :ios, '5.0'
 	s.license			= { :type => 'MIT', :file => 'LICENSE' }
 	s.requires_arc		= true
-	s.source_files		= '*.{h,m}'
+	s.source_files		= 'URBSegmentedControl.{h,m}'
 	s.frameworks		= 'CoreGraphics', 'QuartzCore'
 end
