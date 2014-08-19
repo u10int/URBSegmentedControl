@@ -46,6 +46,7 @@
 	//
 	URBSegmentedControl *iconControl = [[URBSegmentedControl alloc] initWithItems:titles];
 	iconControl.frame = CGRectMake(10.0, CGRectGetMaxY(control.frame) + 20.0, 300.0, 40.0);
+	iconControl.imagePosition = URBSegmentImagePositionRight;
 	[viewController.view addSubview:iconControl];
 	
 	// set icons for each segment

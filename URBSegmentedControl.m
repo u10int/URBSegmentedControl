@@ -15,6 +15,7 @@
 
 @interface URBSegmentView : UIButton
 @property (nonatomic, assign) URBSegmentViewLayout viewLayout;
+@property (nonatomic, assign) URBSegmentImagePosition imagePosition;
 @property (nonatomic, strong) UIColor *imageBackgroundColor;
 @property (nonatomic, strong) UIColor *selectedImageBackgroundColor;
 @property (nonatomic, assign) CGFloat cornerRadius;
@@ -65,6 +66,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
     // layout
     self.layoutOrientation = URBSegmentedControlOrientationHorizontal;
     self.segmentViewLayout = URBSegmentViewLayoutDefault;
+	self.imagePosition = URBSegmentImagePositionLeft;
     
     // base image view
     _backgroundView = [[UIImageView alloc] init];
@@ -153,7 +155,9 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	
 	// style the segment
 	segmentView.viewLayout = self.segmentViewLayout;
+	segmentView.imagePosition = self.imagePosition;
 	segmentView.showsGradient = self.showsGradient;
+	
 	if (self.segmentTextAttributes) {
 		[segmentView setTextAttributes:self.segmentTextAttributes forState:UIControlStateNormal];
 	}
@@ -233,6 +237,16 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		
 		[self.items enumerateObjectsUsingBlock:^(URBSegmentView *segmentView, NSUInteger idx, BOOL *stop) {
 			segmentView.showsGradient = showsGradient;
+		}];
+	}
+}
+
+- (void)setImagePosition:(URBSegmentImagePosition)imagePosition {
+	if (_imagePosition != imagePosition) {
+		_imagePosition = imagePosition;
+		
+		[self.items enumerateObjectsUsingBlock:^(URBSegmentView *segmentView, NSUInteger idx, BOOL *stop) {
+			segmentView.imagePosition = imagePosition;
 		}];
 	}
 }
@@ -674,8 +688,15 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		}
 		else {
 			CGFloat titleX = CGRectGetWidth(frame) / 3.0;
-			imageFrame = UIEdgeInsetsInsetRect(imageFrame, UIEdgeInsetsMake(0, 0, 0, CGRectGetWidth(frame) - titleX));
-			titleFrame = UIEdgeInsetsInsetRect(titleFrame, UIEdgeInsetsMake(0, titleX + 2.0, 0, 0));
+			
+			if (self.imagePosition == URBSegmentImagePositionRight) {
+				imageFrame = UIEdgeInsetsInsetRect(imageFrame, UIEdgeInsetsMake(0, CGRectGetWidth(frame) - titleX, 0, 0));
+				titleFrame = UIEdgeInsetsInsetRect(titleFrame, UIEdgeInsetsMake(0, 0, 0, titleX + 2.0));
+			}
+			else {
+				imageFrame = UIEdgeInsetsInsetRect(imageFrame, UIEdgeInsetsMake(0, 0, 0, CGRectGetWidth(frame) - titleX));
+				titleFrame = UIEdgeInsetsInsetRect(titleFrame, UIEdgeInsetsMake(0, titleX + 2.0, 0, 0));
+			}
 		}
 	}
 	self.imageView.frame = imageFrame;
@@ -729,6 +750,13 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		
 		if (_hasDrawnImages)
 			[self updateBackgrounds];
+	}
+}
+
+- (void)setImagePosition:(URBSegmentImagePosition)imagePosition {
+	if (_imagePosition != imagePosition) {
+		_imagePosition = imagePosition;
+		[self setNeedsLayout];
 	}
 }
 

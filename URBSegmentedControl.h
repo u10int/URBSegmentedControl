@@ -8,17 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
-enum {
+typedef NS_ENUM(NSUInteger, URBSegmentedControlOrientation) {
 	URBSegmentedControlOrientationHorizontal = 0,
 	URBSegmentedControlOrientationVertical
 };
-typedef NSInteger URBSegmentedControlOrientation;
 
-enum {
+typedef NS_ENUM(NSUInteger, URBSegmentViewLayout) {
 	URBSegmentViewLayoutDefault = 0,
 	URBSegmentViewLayoutVertical
 };
-typedef NSInteger URBSegmentViewLayout;
+
+typedef NS_ENUM(NSUInteger, URBSegmentImagePosition) {
+	URBSegmentImagePositionLeft = 0,
+	URBSegmentImagePositionRight
+};
 
 @interface URBSegmentedControl : UISegmentedControl <UIAppearance>
 
@@ -35,6 +38,11 @@ typedef void (^URBSegmentedControlBlock)(NSInteger index, URBSegmentedControl *s
 @property (nonatomic) URBSegmentViewLayout segmentViewLayout;
 
 /**
+ *  Position of the image when placed horizontally next to a segment label. Not used for controls containing only text or images.
+ */
+@property (nonatomic, assign) URBSegmentImagePosition imagePosition;
+
+/**
  Block handle called when the selected segment has changed.
  */
 @property (nonatomic, copy) URBSegmentedControlBlock controlEventBlock;
@@ -43,6 +51,8 @@ typedef void (^URBSegmentedControlBlock)(NSInteger index, URBSegmentedControl *s
  Background color for the base container view.
  */
 @property (nonatomic, strong) UIColor *baseColor;
+
+@property (nonatomic, strong) UIColor *baseGradient;
 
 /**
  Stroke color used around the base container view.
@@ -74,6 +84,7 @@ typedef void (^URBSegmentedControlBlock)(NSInteger index, URBSegmentedControl *s
 ///----------------------------
 
 @property (nonatomic, strong) UIColor *segmentBackgroundColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic, strong) UIColor *segmentBackgroundGradient UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) UIColor *imageColor UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) UIColor *selectedImageColor UI_APPEARANCE_SELECTOR;
 

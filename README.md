@@ -26,7 +26,7 @@ URBSegmentedControl
 Add the following to your `Podfile` and run `$ pod install`:
 
 	pod "URBSegmentedControl"
-	
+
 If you don't have CocoaPods installed or integrated into your project, you can learn how to do via [CocoaPods](http://cocoapods.org/).
 
 ### Installing Manually
@@ -85,17 +85,18 @@ Your `URBSegmentedControl` can be customized using the following properties:
 
 ```objective-c
 // base styles
-@property (nonatomic, strong) UIColor *baseColor;				// default [UIColor colorWithWhite:0.3 alpha:1.0]
-@property (nonatomic, strong) UIColor *strokeColor;				// default [UIColor darkGrayColor]
-@property (nonatomic, assign) CGFloat strokeWidth;				// default 2.0
-@property (nonatomic) CGFloat cornerRadius;						// default 2.0
-@property (nonatomic, assign) UIEdgeInsets segmentEdgeInsets;	// default UIEdgeInsetsMake(4.0, 4.0, 4.0, 4.0)
+@property (nonatomic, strong) UIColor *baseColor;						// default [UIColor colorWithWhite:0.3 alpha:1.0]
+@property (nonatomic, strong) UIColor *strokeColor;						// default [UIColor darkGrayColor]
+@property (nonatomic, assign) CGFloat strokeWidth;						// default 2.0
+@property (nonatomic) CGFloat cornerRadius;								// default 2.0
+@property (nonatomic, assign) UIEdgeInsets segmentEdgeInsets;			// default UIEdgeInsetsMake(4.0, 4.0, 4.0, 4.0)
+@property (nonatomic, assign) URBSegmentImagePosition imagePosition;	// default URBSegmentImagePositionLeft
 
 // segment styles
-@property (nonatomic, strong) UIColor *segmentBackgroundColor;		// default [UIColor redColor]
-@property (nonatomic, strong) UIColor *imageColor;					// default [UIColor grayColor]
-@property (nonatomic, strong) UIColor *selectedImageColor;			// default [UIColor whiteColor]
-@property (nonatomic, assign) BOOL showsGradient;					// determines if the base and segment background should have a gradient applied, default YES
+@property (nonatomic, strong) UIColor *segmentBackgroundColor;			// default [UIColor redColor]
+@property (nonatomic, strong) UIColor *imageColor;						// default [UIColor grayColor]
+@property (nonatomic, strong) UIColor *selectedImageColor;				// default [UIColor whiteColor]
+@property (nonatomic, assign) BOOL showsGradient;						// determines if the base and segment background should have a gradient applied, default YES
 ```
 
 By default, your images will be tinted with the colors you define using the `imageColor` and `selectedImageColor` properties. If you would rather keep your images in their original format, just set these color properties to `nil`:
@@ -117,7 +118,7 @@ In most cases, the default insets applied to the content, title and image for ea
 
 - Support setting images to use for background and segment states instead of drawing in CoreGraphics within the class
 - Support for UISegmentedControl's `momentary` mode
-- Better support for customization using UIAppearance
+~~- Better support for customization using UIAppearance~~
 
 ## Credits
 
