@@ -439,7 +439,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	
 	{
 		// base path
-		CGRect backgroundBaseRect = CGRectMake(CGRectGetMinX(frame) + stroke / 2.0, CGRectGetMinY(frame) + stroke / 2.0, size.width - stroke, size.height - stroke);
+		CGRect backgroundBaseRect = CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(frame), size.width, size.height);
 		UIBezierPath* backgroundBasePath = [UIBezierPath bezierPathWithRoundedRect: backgroundBaseRect cornerRadius:radius];
 		CGContextSaveGState(context);
 		[backgroundBasePath addClip];
