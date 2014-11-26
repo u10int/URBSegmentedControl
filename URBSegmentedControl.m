@@ -232,13 +232,13 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 }
 
 - (void)setShowsGradient:(BOOL)showsGradient {
-	if (showsGradient != _showsGradient) {
-		_showsGradient = showsGradient;
-		
-		[self.items enumerateObjectsUsingBlock:^(URBSegmentView *segmentView, NSUInteger idx, BOOL *stop) {
-			segmentView.showsGradient = showsGradient;
-		}];
-	}
+//	if (showsGradient != _showsGradient) {
+//		_showsGradient = showsGradient;
+//		
+//		[self.items enumerateObjectsUsingBlock:^(URBSegmentView *segmentView, NSUInteger idx, BOOL *stop) {
+//			segmentView.showsGradient = showsGradient;
+//		}];
+//	}
 }
 
 - (void)setImagePosition:(URBSegmentImagePosition)imagePosition {
@@ -430,21 +430,16 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	// colors
 	UIColor* baseGradientTopColor = (self.showsGradient) ? [self.baseColor adjustBrightness:1.1] : self.baseColor;
 	UIColor* baseGradientBottomColor = (self.showsGradient) ? [self.baseColor adjustBrightness:0.9] : self.baseColor;
-	UIColor* baseStrokeColor = self.strokeColor;
 	
 	// gradients
 	NSArray* baseGradientColors = @[(id)baseGradientTopColor.CGColor, (id)baseGradientBottomColor.CGColor];
 	CGFloat baseGradientLocations[] = {0, 1};
 	CGGradientRef baseGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)baseGradientColors, baseGradientLocations);
 	
-	// shadows
-	UIColor* baseInnerShadow = [UIColor blackColor];
-	CGSize baseInnerShadowOffset = CGSizeMake(0.1, 1.1);
-	CGFloat baseInnerShadowBlurRadius = 3;
 	
 	{
 		// base path
-		CGRect backgroundBaseRect = CGRectMake(CGRectGetMinX(frame) + stroke / 2.0, CGRectGetMinY(frame) + stroke / 2.0, size.width - stroke, size.height - stroke);
+		CGRect backgroundBaseRect = CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(frame), size.width, size.height);
 		UIBezierPath* backgroundBasePath = [UIBezierPath bezierPathWithRoundedRect: backgroundBaseRect cornerRadius:radius];
 		CGContextSaveGState(context);
 		[backgroundBasePath addClip];
@@ -453,36 +448,6 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 									CGPointMake(CGRectGetMidX(backgroundBaseRect), CGRectGetMaxY(backgroundBaseRect)),
 									0);
 		CGContextRestoreGState(context);
-		
-		// inner shadow
-		CGRect backgroundBaseBorderRect = CGRectInset([backgroundBasePath bounds], -baseInnerShadowBlurRadius, -baseInnerShadowBlurRadius);
-		backgroundBaseBorderRect = CGRectOffset(backgroundBaseBorderRect, -baseInnerShadowOffset.width, -baseInnerShadowOffset.height);
-		backgroundBaseBorderRect = CGRectInset(CGRectUnion(backgroundBaseBorderRect, [backgroundBasePath bounds]), -1, -1);
-		
-		UIBezierPath* backgroundBaseNegativePath = [UIBezierPath bezierPathWithRect: backgroundBaseBorderRect];
-		[backgroundBaseNegativePath appendPath: backgroundBasePath];
-		backgroundBaseNegativePath.usesEvenOddFillRule = YES;
-		
-		CGContextSaveGState(context);
-		{
-			CGFloat xOffset = baseInnerShadowOffset.width + round(backgroundBaseBorderRect.size.width);
-			CGFloat yOffset = baseInnerShadowOffset.height;
-			CGContextSetShadowWithColor(context,
-										CGSizeMake(xOffset + copysign(0.1, xOffset), yOffset + copysign(0.1, yOffset)),
-										baseInnerShadowBlurRadius,
-										baseInnerShadow.CGColor);
-			
-			[backgroundBasePath addClip];
-			CGAffineTransform transform = CGAffineTransformMakeTranslation(-round(backgroundBaseBorderRect.size.width), 0);
-			[backgroundBaseNegativePath applyTransform: transform];
-			[[UIColor grayColor] setFill];
-			[backgroundBaseNegativePath fill];
-		}
-		CGContextRestoreGState(context);
-		
-		[baseStrokeColor setStroke];
-		backgroundBasePath.lineWidth = 2;
-		[backgroundBasePath stroke];
 	}
 	
 	CGGradientRelease(baseGradient);
@@ -577,10 +542,10 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	URBSegmentView *appearance = [self appearance];
 	
 	[appearance setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-	[appearance setTitleShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
+
 	
 	[appearance setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-	[appearance setTitleShadowColor:[UIColor blackColor] forState:UIControlStateSelected];
+
 	
 	// slightly adjust title colors for the highlight states
 	UIColor *titleColor = [appearance titleColorForState:UIControlStateNormal];
@@ -596,7 +561,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.titleLabel.shadowOffset = CGSizeMake(0, 0.5);
+
 		self.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-CondensedBold" size:14.0];
 		self.userInteractionEnabled = YES;
 		self.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
@@ -607,22 +572,16 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		
 		self.viewLayout = URBSegmentViewLayoutDefault;
 		
-		self.titleLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
+
 		self.titleLabel.textAlignment = UITextAlignmentCenter;
 		
 		self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-		self.imageView.layer.shadowColor = [UIColor blackColor].CGColor;
-		self.imageView.layer.shadowOffset = CGSizeMake(0.0, 1.0);
-		self.imageView.layer.shadowRadius = 0;
-		self.imageView.layer.shadowOpacity = 1.0;
+
 		self.imageView.layer.shouldRasterize = YES;
 		self.imageView.layer.rasterizationScale = self.imageView.image.scale;
 		self.imageView.layer.masksToBounds = NO;
 		
-		self.layer.shadowColor = [UIColor blackColor].CGColor;
-		self.layer.shadowOffset = CGSizeMake(0.0, 0.5);
-		self.layer.shadowRadius = 2.0;
-		self.layer.shadowOpacity = 0.0;
+
 		self.layer.masksToBounds = NO;
 		
 		self.imageBackgroundColor = [UIColor redColor];
@@ -641,8 +600,6 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 - (void)setTextAttributes:(NSDictionary *)textAttributes forState:(UIControlState)state {
 	UIFont *font = [textAttributes objectForKey:UITextAttributeFont];
 	UIColor *textColor = [textAttributes objectForKey:UITextAttributeTextColor];
-	UIColor *textShadowColor = [textAttributes objectForKey:UITextAttributeTextShadowColor];
-	NSValue *shadowOffsetValue = [textAttributes objectForKey:UITextAttributeTextShadowOffset];
 	
     if (font) {
 		self.titleLabel.font = font;
@@ -651,15 +608,6 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
     if (textColor) {
 		[self setTitleColor:textColor forState:state];
 	}
-	
-    if (textShadowColor) {
-		[self setTitleShadowColor:textShadowColor forState:state];
-	}
-	
-    if (shadowOffsetValue) {
-        UIOffset shadowOffset = [shadowOffsetValue UIOffsetValue];
-        self.titleLabel.shadowOffset = CGSizeMake(shadowOffset.horizontal, shadowOffset.vertical);
-    }
 }
 
 - (void)layoutSubviews {
@@ -702,13 +650,6 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	self.imageView.frame = imageFrame;
 	self.titleLabel.frame = titleFrame;
 	
-	if (self.selected)
-		self.titleLabel.shadowOffset = CGSizeMake(0.0f, -0.5f);
-	else
-		self.titleLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
-	
-	self.imageView.layer.shadowOffset = self.titleLabel.shadowOffset;
-	
 }
 
 #pragma mark - Properties
@@ -726,10 +667,6 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 - (void)setSelected:(BOOL)selected {
 	[super setSelected:selected];
 	
-	if (selected)
-		self.layer.shadowOpacity = 0.8;
-	else
-		self.layer.shadowOpacity = 0;
 }
 
 - (void)setViewLayout:(URBSegmentViewLayout)viewLayout {
@@ -745,12 +682,12 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 }
 
 - (void)setShowsGradient:(BOOL)showsGradient {
-	if (showsGradient != _showsGradient) {
-		_showsGradient = showsGradient;
-		
-		if (_hasDrawnImages)
-			[self updateBackgrounds];
-	}
+//	if (showsGradient != _showsGradient) {
+//		_showsGradient = showsGradient;
+//		
+//		if (_hasDrawnImages)
+//			[self updateBackgrounds];
+//	}
 }
 
 - (void)setImagePosition:(URBSegmentImagePosition)imagePosition {
@@ -763,103 +700,103 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 #pragma mark - Background Images
 
 - (void)updateBackgrounds {
-	[self setBackgroundImage:[self normalBackgroundImage] forState:UIControlStateNormal];
-	[self setBackgroundImage:[self selectedBackgroundImage] forState:UIControlStateSelected];
-	[self setBackgroundImage:[self selectedBackgroundImage] forState:UIControlStateSelected|UIControlStateHighlighted];
+//	[self setBackgroundImage:[self normalBackgroundImage] forState:UIControlStateNormal];
+//	[self setBackgroundImage:[self selectedBackgroundImage] forState:UIControlStateSelected];
+//	[self setBackgroundImage:[self selectedBackgroundImage] forState:UIControlStateSelected|UIControlStateHighlighted];
 }
 
-- (UIImage *)normalBackgroundImage {
-	return nil;
-}
-
-- (UIImage *)selectedBackgroundImage {
-	CGSize size = CGSizeMake(20.0, 20.0);
-	UIGraphicsBeginImageContextWithOptions(size, NO, 0.0f);
-	
-	CGFloat stroke = 2.0;
-	CGFloat radius = self.cornerRadius - 1.0;
-	CGRect frame = CGRectMake(0, 0, size.width, size.height);
-	
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-	CGContextRef context = UIGraphicsGetCurrentContext();
-	
-	// colors
-	UIColor *segmentGradientTopColor = (self.showsGradient) ? [self.imageBackgroundColor adjustBrightness:1.2] : self.imageBackgroundColor;
-	UIColor *segmentGradientBottomColor = (self.showsGradient) ? [self.imageBackgroundColor adjustBrightness:0.8] : self.imageBackgroundColor;
-	UIColor *segmentStrokeColor = [self.imageBackgroundColor adjustBrightness:0.5];
-	UIColor *segmentHighlight = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.7];
-	
-	// gradients
-	NSArray *segmentGradientColors = @[(id)segmentGradientTopColor.CGColor, (id)segmentGradientBottomColor.CGColor];
-	CGFloat segmentGradientLocations[] = {0, 1};
-	CGGradientRef segmentGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)segmentGradientColors, segmentGradientLocations);
-	
-	// shadows
-	CGSize segmentHighlightOffset = CGSizeMake(0.1, 1.1);
-	CGFloat segmentHighlightBlurRadius = 2;
-	
-	{
-		CGContextSaveGState(context);
-		//CGContextSetShadowWithColor(context, segmentShadowOffset, segmentShadowBlurRadius, segmentShadow.CGColor);
-		CGContextBeginTransparencyLayer(context, NULL);
-		
-		// outer path
-		UIBezierPath *segmentBaseOuterPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(frame), CGRectGetWidth(frame), CGRectGetHeight(frame)) cornerRadius:radius];
-		[segmentStrokeColor setFill];
-		[segmentBaseOuterPath fill];
-		
-		// inner path
-		CGRect segmentBaseRect = CGRectMake(CGRectGetMinX(frame) + stroke, CGRectGetMinY(frame) + stroke, CGRectGetWidth(frame) - stroke * 2.0, CGRectGetHeight(frame) - stroke * 2.0);
-		UIBezierPath *segmentBasePath = [UIBezierPath bezierPathWithRoundedRect:segmentBaseRect cornerRadius:radius];
-		CGContextSaveGState(context);
-		[segmentBasePath addClip];
-		CGContextDrawLinearGradient(context, segmentGradient,
-									CGPointMake(CGRectGetMidX(segmentBaseRect), CGRectGetMinY(segmentBaseRect)),
-									CGPointMake(CGRectGetMidX(segmentBaseRect), CGRectGetMaxY(segmentBaseRect)),
-									0);
-		CGContextRestoreGState(context);
-		
-		// inner shadow
-		CGRect segmentBaseBorderRect = CGRectInset([segmentBasePath bounds], -segmentHighlightBlurRadius, -segmentHighlightBlurRadius);
-		segmentBaseBorderRect = CGRectOffset(segmentBaseBorderRect, -segmentHighlightOffset.width, -segmentHighlightOffset.height);
-		segmentBaseBorderRect = CGRectInset(CGRectUnion(segmentBaseBorderRect, [segmentBasePath bounds]), -1, -1);
-		
-		UIBezierPath* segmentBaseNegativePath = [UIBezierPath bezierPathWithRect:segmentBaseBorderRect];
-		[segmentBaseNegativePath appendPath: segmentBasePath];
-		segmentBaseNegativePath.usesEvenOddFillRule = YES;
-		
-		CGContextSaveGState(context);
-		{
-			CGFloat xOffset = segmentHighlightOffset.width + round(segmentBaseBorderRect.size.width);
-			CGFloat yOffset = segmentHighlightOffset.height;
-			CGContextSetShadowWithColor(context,
-										CGSizeMake(xOffset + copysign(0.1, xOffset), yOffset + copysign(0.1, yOffset)),
-										segmentHighlightBlurRadius,
-										segmentHighlight.CGColor);
-			
-			[segmentBasePath addClip];
-			CGAffineTransform transform = CGAffineTransformMakeTranslation(-round(segmentBaseBorderRect.size.width), 0);
-			[segmentBaseNegativePath applyTransform: transform];
-			[[UIColor grayColor] setFill];
-			[segmentBaseNegativePath fill];
-		}
-		CGContextRestoreGState(context);
-		
-		CGContextEndTransparencyLayer(context);
-		CGContextRestoreGState(context);
-	}
-	
-	CGGradientRelease(segmentGradient);
-	CGColorSpaceRelease(colorSpace);
-	
-	UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-	
-	CGFloat topCap = CGRectGetMidY(frame) - 1.0;
-	CGFloat leftCap = CGRectGetMidX(frame) - 1.0;
-	
-	return [image resizableImageWithCapInsets:UIEdgeInsetsMake(topCap, leftCap, topCap, leftCap)];
-}
+//- (UIImage *)normalBackgroundImage {
+//	return nil;
+//}
+//
+//- (UIImage *)selectedBackgroundImage {
+//	CGSize size = CGSizeMake(20.0, 20.0);
+//	UIGraphicsBeginImageContextWithOptions(size, NO, 0.0f);
+//	
+//	CGFloat stroke = 2.0;
+//	CGFloat radius = self.cornerRadius - 1.0;
+//	CGRect frame = CGRectMake(0, 0, size.width, size.height);
+//	
+//	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+//	CGContextRef context = UIGraphicsGetCurrentContext();
+//	
+//	// colors
+//	UIColor *segmentGradientTopColor = (self.showsGradient) ? [self.imageBackgroundColor adjustBrightness:1.2] : self.imageBackgroundColor;
+//	UIColor *segmentGradientBottomColor = (self.showsGradient) ? [self.imageBackgroundColor adjustBrightness:0.8] : self.imageBackgroundColor;
+//	UIColor *segmentStrokeColor = [self.imageBackgroundColor adjustBrightness:0.5];
+//	UIColor *segmentHighlight = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.7];
+//	
+//	// gradients
+//	NSArray *segmentGradientColors = @[(id)segmentGradientTopColor.CGColor, (id)segmentGradientBottomColor.CGColor];
+//	CGFloat segmentGradientLocations[] = {0, 1};
+//	CGGradientRef segmentGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)segmentGradientColors, segmentGradientLocations);
+//	
+//	// shadows
+//	CGSize segmentHighlightOffset = CGSizeMake(0.1, 1.1);
+//	CGFloat segmentHighlightBlurRadius = 2;
+//	
+//	{
+//		CGContextSaveGState(context);
+//		//CGContextSetShadowWithColor(context, segmentShadowOffset, segmentShadowBlurRadius, segmentShadow.CGColor);
+//		CGContextBeginTransparencyLayer(context, NULL);
+//		
+//		// outer path
+//		UIBezierPath *segmentBaseOuterPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(frame), CGRectGetWidth(frame), CGRectGetHeight(frame)) cornerRadius:radius];
+//		[segmentStrokeColor setFill];
+//		[segmentBaseOuterPath fill];
+//		
+//		// inner path
+//		CGRect segmentBaseRect = CGRectMake(CGRectGetMinX(frame) + stroke, CGRectGetMinY(frame) + stroke, CGRectGetWidth(frame) - stroke * 2.0, CGRectGetHeight(frame) - stroke * 2.0);
+//		UIBezierPath *segmentBasePath = [UIBezierPath bezierPathWithRoundedRect:segmentBaseRect cornerRadius:radius];
+//		CGContextSaveGState(context);
+//		[segmentBasePath addClip];
+//		CGContextDrawLinearGradient(context, segmentGradient,
+//									CGPointMake(CGRectGetMidX(segmentBaseRect), CGRectGetMinY(segmentBaseRect)),
+//									CGPointMake(CGRectGetMidX(segmentBaseRect), CGRectGetMaxY(segmentBaseRect)),
+//									0);
+//		CGContextRestoreGState(context);
+//		
+//		// inner shadow
+//		CGRect segmentBaseBorderRect = CGRectInset([segmentBasePath bounds], -segmentHighlightBlurRadius, -segmentHighlightBlurRadius);
+//		segmentBaseBorderRect = CGRectOffset(segmentBaseBorderRect, -segmentHighlightOffset.width, -segmentHighlightOffset.height);
+//		segmentBaseBorderRect = CGRectInset(CGRectUnion(segmentBaseBorderRect, [segmentBasePath bounds]), -1, -1);
+//		
+//		UIBezierPath* segmentBaseNegativePath = [UIBezierPath bezierPathWithRect:segmentBaseBorderRect];
+//		[segmentBaseNegativePath appendPath: segmentBasePath];
+//		segmentBaseNegativePath.usesEvenOddFillRule = YES;
+//		
+//		CGContextSaveGState(context);
+//		{
+//			CGFloat xOffset = segmentHighlightOffset.width + round(segmentBaseBorderRect.size.width);
+//			CGFloat yOffset = segmentHighlightOffset.height;
+//			CGContextSetShadowWithColor(context,
+//										CGSizeMake(xOffset + copysign(0.1, xOffset), yOffset + copysign(0.1, yOffset)),
+//										segmentHighlightBlurRadius,
+//										segmentHighlight.CGColor);
+//			
+//			[segmentBasePath addClip];
+//			CGAffineTransform transform = CGAffineTransformMakeTranslation(-round(segmentBaseBorderRect.size.width), 0);
+//			[segmentBaseNegativePath applyTransform: transform];
+//			[[UIColor grayColor] setFill];
+//			[segmentBaseNegativePath fill];
+//		}
+//		CGContextRestoreGState(context);
+//		
+//		CGContextEndTransparencyLayer(context);
+//		CGContextRestoreGState(context);
+//	}
+//	
+//	CGGradientRelease(segmentGradient);
+//	CGColorSpaceRelease(colorSpace);
+//	
+//	UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//	
+//	CGFloat topCap = CGRectGetMidY(frame) - 1.0;
+//	CGFloat leftCap = CGRectGetMidX(frame) - 1.0;
+//	
+//	return [image resizableImageWithCapInsets:UIEdgeInsetsMake(topCap, leftCap, topCap, leftCap)];
+//}
 
 @end
 
