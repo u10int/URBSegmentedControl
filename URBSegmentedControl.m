@@ -430,7 +430,6 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	// colors
 	UIColor* baseGradientTopColor = (self.showsGradient) ? [self.baseColor adjustBrightness:1.1] : self.baseColor;
 	UIColor* baseGradientBottomColor = (self.showsGradient) ? [self.baseColor adjustBrightness:0.9] : self.baseColor;
-	UIColor* baseStrokeColor = self.strokeColor;
 	
 	// gradients
 	NSArray* baseGradientColors = @[(id)baseGradientTopColor.CGColor, (id)baseGradientBottomColor.CGColor];
@@ -449,11 +448,6 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 									CGPointMake(CGRectGetMidX(backgroundBaseRect), CGRectGetMaxY(backgroundBaseRect)),
 									0);
 		CGContextRestoreGState(context);
-		
-		
-		[baseStrokeColor setStroke];
-		backgroundBasePath.lineWidth = 2;
-		[backgroundBasePath stroke];
 	}
 	
 	CGGradientRelease(baseGradient);
