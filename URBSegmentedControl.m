@@ -790,9 +790,12 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	UIColor *segmentHighlight = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.7];
 	
 	// gradients
-	NSArray *segmentGradientColors = @[(id)segmentGradientTopColor.CGColor, (id)segmentGradientBottomColor.CGColor];
-	CGFloat segmentGradientLocations[] = {0, 1};
-	CGGradientRef segmentGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)segmentGradientColors, segmentGradientLocations);
+	CGGradientRef segmentGradient = NULL;
+	if (segmentGradientTopColor && segmentGradientBottomColor) {
+		NSArray *segmentGradientColors = @[(id)segmentGradientTopColor.CGColor, (id)segmentGradientBottomColor.CGColor];
+		CGFloat segmentGradientLocations[] = {0, 1};
+		segmentGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)segmentGradientColors, segmentGradientLocations);
+	}
 	
 	// shadows
 	CGSize segmentHighlightOffset = CGSizeMake(0.1, 1.1);
@@ -813,10 +816,12 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		UIBezierPath *segmentBasePath = [UIBezierPath bezierPathWithRoundedRect:segmentBaseRect cornerRadius:radius];
 		CGContextSaveGState(context);
 		[segmentBasePath addClip];
-		CGContextDrawLinearGradient(context, segmentGradient,
-									CGPointMake(CGRectGetMidX(segmentBaseRect), CGRectGetMinY(segmentBaseRect)),
-									CGPointMake(CGRectGetMidX(segmentBaseRect), CGRectGetMaxY(segmentBaseRect)),
-									0);
+		if (segmentGradient) {
+			CGContextDrawLinearGradient(context, segmentGradient,
+										CGPointMake(CGRectGetMidX(segmentBaseRect), CGRectGetMinY(segmentBaseRect)),
+										CGPointMake(CGRectGetMidX(segmentBaseRect), CGRectGetMaxY(segmentBaseRect)),
+										0);
+		}
 		CGContextRestoreGState(context);
 		
 		// inner shadow
