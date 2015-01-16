@@ -16,6 +16,9 @@
 @interface URBSegmentView : UIButton
 @property (nonatomic, assign) URBSegmentViewLayout viewLayout;
 @property (nonatomic, assign) URBSegmentImagePosition imagePosition;
+@property (nonatomic, strong) UIFont *font;
+@property (nonatomic, strong) UIColor *textColor;
+@property (nonatomic, strong) UIColor *selectedTextColor;
 @property (nonatomic, strong) UIColor *imageBackgroundColor;
 @property (nonatomic, strong) UIColor *selectedImageBackgroundColor;
 @property (nonatomic, assign) CGFloat cornerRadius;
@@ -27,8 +30,6 @@
 @interface URBSegmentedControl ()
 @property (nonatomic, strong) NSMutableArray *items;
 @property (nonatomic, strong) UIImageView *backgroundView;
-@property (nonatomic, strong) NSDictionary *segmentTextAttributes;
-@property (nonatomic, strong) NSDictionary *segmentDisabledTextAttributes;
 - (void)layoutSegments;
 - (void)handleSelect:(URBSegmentView *)segmentView;
 - (NSInteger)firstSegmentIndexNearIndex:(NSUInteger)index enabled:(BOOL)enabled;
@@ -157,13 +158,6 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	segmentView.viewLayout = self.segmentViewLayout;
 	segmentView.imagePosition = self.imagePosition;
 	segmentView.showsGradient = self.showsGradient;
-	
-	if (self.segmentTextAttributes) {
-		[segmentView setTextAttributes:self.segmentTextAttributes forState:UIControlStateNormal];
-	}
-	if (self.segmentDisabledTextAttributes) {
-		[segmentView setTextAttributes:self.segmentDisabledTextAttributes forState:UIControlStateDisabled];
-	}
 	
 	// set custom styles if defined
 	segmentView.cornerRadius = self.cornerRadius;
@@ -382,14 +376,11 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 
 #pragma mark - Customization
 
-- (void)setTextAttributes:(NSDictionary *)textAttributes forState:(UIControlState)state {
-	if (state == UIControlStateDisabled)
-		self.segmentDisabledTextAttributes = textAttributes;
-	else
-		self.segmentTextAttributes = textAttributes;
+- (void)setTitleTextAttributes:(NSDictionary *)attributes forState:(UIControlState)state {
+	[super setTitleTextAttributes:attributes forState:state];
 	
 	[self.items enumerateObjectsUsingBlock:^(URBSegmentView *segmentView, NSUInteger idx, BOOL *stop) {
-		[segmentView setTextAttributes:textAttributes forState:state];
+		[segmentView setTextAttributes:attributes forState:state];
 	}];
 }
 
@@ -505,13 +496,13 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 }
 
 - (NSInteger)firstSegmentIndexNearIndex:(NSUInteger)index enabled:(BOOL)enabled {
-	for (int i = index; i < self.items.count; i++) {
+	for (NSInteger i = index; i < self.items.count; i++) {
 		if (((URBSegmentView *)[self.items objectAtIndex:i]).enabled == enabled) {
 			return i;
 		}
 	}
 	
-	for (int i = index; i >= 0; i--) {
+	for (NSInteger i = index; i >= 0; i--) {
 		if (((URBSegmentView *)[self.items objectAtIndex:i]).enabled == enabled) {
 			return i;
 		}

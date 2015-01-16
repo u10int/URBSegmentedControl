@@ -66,12 +66,14 @@
 	
 	
 	//
-	// Vertical segmented control with icons in horizontal layout
+	// Vertical segmented control with icons in horizontal layout and different font
 	//
+	NSDictionary *textAttributes = @{UITextAttributeFont: [UIFont fontWithName:@"Avenir-Heavy" size:16.0]};
 	URBSegmentedControl *verticalControl2 = [[URBSegmentedControl alloc] initWithTitles:titles icons:icons];
 	verticalControl2.frame = CGRectMake(CGRectGetMaxX(verticalControl.frame) + 20.0, CGRectGetMaxY(iconControl.frame) + 20.0, 180.0, 150.0);
 	verticalControl2.layoutOrientation = URBSegmentedControlOrientationVertical;
 	verticalControl2.imageEdgeInsets = UIEdgeInsetsMake(6.0, 6.0, 6.0, 6.0);
+	[verticalControl2 setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
 	[viewController.view addSubview:verticalControl2];
 	
 	// set icons for each segment
