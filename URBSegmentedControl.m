@@ -30,10 +30,7 @@
 @interface URBSegmentedControl ()
 @property (nonatomic, strong) NSMutableArray *items;
 @property (nonatomic, strong) UIImageView *backgroundView;
-- (void)layoutSegments;
-- (void)handleSelect:(URBSegmentView *)segmentView;
-- (NSInteger)firstSegmentIndexNearIndex:(NSUInteger)index enabled:(BOOL)enabled;
-- (UIImage *)defaultBackgroundImage;
+@property (nonatomic, strong) NSMutableDictionary *staticSegmentWidths;
 @end
 
 static CGSize const kURBDefaultSize = {300.0f, 44.0f};
@@ -367,6 +364,12 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	CGRect frame = segmentView.frame;
 	frame.size.width = width;
 	segmentView.frame = frame;
+	
+	if (!self.staticSegmentWidths) {
+		self.staticSegmentWidths = [NSMutableDictionary dictionary];
+	}
+	self.staticSegmentWidths[@(segment)] = @(width);
+	
 	[self setNeedsLayout];
 }
 
@@ -531,6 +534,15 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 		self.backgroundView.image = [self defaultBackgroundImage];
 	}
 	[self layoutSegments];
+	
+	if (self.layoutOrientation == URBSegmentedControlOrientationHorizontal) {
+		URBSegmentView *lastSegment = [self.items lastObject];
+		if (lastSegment && CGRectGetMaxX(lastSegment.frame) > CGRectGetWidth(self.bounds) && !isinf(CGRectGetMaxX(lastSegment.frame))) {
+			CGRect frame = self.frame;
+			frame.size.width = CGRectGetMaxX(lastSegment.frame) + self.segmentEdgeInsets.right;
+			self.frame = frame;
+		}
+	}
 }
 
 - (void)layoutSegments {
@@ -538,18 +550,39 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 	
 	// calculate width of each segment based on number of items and total available width
 	CGRect segmentRect = CGRectInset(self.bounds, self.segmentEdgeInsets.top, self.segmentEdgeInsets.left);
-	CGSize totalSize = segmentRect.size;
-	CGSize segmentSize = (self.layoutOrientation == URBSegmentedControlOrientationVertical) ? CGSizeMake(totalSize.width, totalSize.height / self.items.count) : CGSizeMake(totalSize.width / self.items.count, totalSize.height);
+	CGSize segmentSize = [self defaultSegmentSize];
 	
+	__block CGFloat xOffset = CGRectGetMinX(segmentRect);
 	[self.items enumerateObjectsUsingBlock:^(URBSegmentView *item, NSUInteger idx, BOOL *stop) {
+		CGFloat itemWidth = (self.staticSegmentWidths[@(idx)]) ? [self.staticSegmentWidths[@(idx)] floatValue] : segmentSize.width;
 		if (self.layoutOrientation == URBSegmentedControlOrientationVertical) {
 			item.frame = CGRectMake(CGRectGetMinX(segmentRect), CGRectGetMinY(segmentRect) + segmentSize.height * idx, segmentSize.width, segmentSize.height);
 		}
 		else {
-			item.frame = CGRectMake(CGRectGetMinX(segmentRect) + segmentSize.width * idx, CGRectGetMinY(segmentRect), segmentSize.width, segmentSize.height);
+			item.frame = CGRectMake(xOffset, CGRectGetMinY(segmentRect), itemWidth, segmentSize.height);
 		}
 		[item setNeedsLayout];
+		xOffset = CGRectGetMaxX(item.frame);
 	}];
+}
+
+- (CGSize)defaultSegmentSize {
+	CGSize segmentSize = CGRectInset(self.bounds, self.segmentEdgeInsets.top, self.segmentEdgeInsets.left).size;
+	__block NSInteger totalSegments = [self.items count];
+	
+	if (self.layoutOrientation == URBSegmentedControlOrientationVertical) {
+		segmentSize.height = segmentSize.height / totalSegments;
+	}
+	else {
+		__block CGFloat maxWidth = segmentSize.width;
+		[self.staticSegmentWidths enumerateKeysAndObjectsUsingBlock:^(NSNumber *idx, NSNumber *width, BOOL * _Nonnull stop) {
+			maxWidth -= [width floatValue];
+			totalSegments -= 1;
+		}];
+		segmentSize.width = round(maxWidth / totalSegments);
+	}
+	
+	return segmentSize;
 }
 
 @end
@@ -690,6 +723,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 			}
 		}
 	}
+
 	self.imageView.frame = imageFrame;
 	self.titleLabel.frame = titleFrame;
 	

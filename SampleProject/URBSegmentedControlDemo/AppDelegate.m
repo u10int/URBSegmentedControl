@@ -29,7 +29,7 @@
 	// Basic horizontal segmented control
 	//
 	URBSegmentedControl *control = [[URBSegmentedControl alloc] initWithItems:titles];
-	control.frame = CGRectMake(10.0, 10.0, 300.0, 40.0);
+	control.frame = CGRectMake(10.0, 30.0, 300.0, 40.0);
 	control.segmentBackgroundColor = [UIColor blueColor];
 	[control setSegmentBackgroundColor:[UIColor greenColor] atIndex:2];
 	[viewController.view addSubview:control];
@@ -53,6 +53,8 @@
 	[iconControl setImage:[UIImage imageNamed:@"mountains.png"] forSegmentAtIndex:0];
 	[iconControl setImage:[UIImage imageNamed:@"snowboarder.png"] forSegmentAtIndex:1];
 	[iconControl setImage:[UIImage imageNamed:@"biker.png"] forSegmentAtIndex:2];
+	// manually set static width on second segment
+	[iconControl setWidth:150 forSegmentAtIndex:1];
 	
 	
 	//
