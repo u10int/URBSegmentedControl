@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B0CEBC81C383A9D00BC9371 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2B0CEBC61C383A9D00BC9371 /* LaunchScreen.storyboard */; };
 		2B3C328F16BEE3E800E4F9CD /* biker.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B3C328916BEE3E800E4F9CD /* biker.png */; };
 		2B3C329016BEE3E800E4F9CD /* biker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B3C328A16BEE3E800E4F9CD /* biker@2x.png */; };
 		2B3C329116BEE3E800E4F9CD /* mountains.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B3C328B16BEE3E800E4F9CD /* mountains.png */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2B0CEBC71C383A9D00BC9371 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2B3C328916BEE3E800E4F9CD /* biker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = biker.png; sourceTree = "<group>"; };
 		2B3C328A16BEE3E800E4F9CD /* biker@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "biker@2x.png"; sourceTree = "<group>"; };
 		2B3C328B16BEE3E800E4F9CD /* mountains.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mountains.png; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				2B89937D16BC1E4400642D1F /* Default.png */,
 				2B89937F16BC1E4400642D1F /* Default@2x.png */,
 				2B89938116BC1E4400642D1F /* Default-568h@2x.png */,
+				2B0CEBC61C383A9D00BC9371 /* LaunchScreen.storyboard */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -165,6 +168,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 2B89935C16BC1E4400642D1F;
 			productRefGroup = 2B89936816BC1E4400642D1F /* Products */;
@@ -190,6 +194,7 @@
 				2B3C329116BEE3E800E4F9CD /* mountains.png in Resources */,
 				2B3C329216BEE3E800E4F9CD /* mountains@2x.png in Resources */,
 				2B3C329316BEE3E800E4F9CD /* snowboarder.png in Resources */,
+				2B0CEBC81C383A9D00BC9371 /* LaunchScreen.storyboard in Resources */,
 				2B3C329416BEE3E800E4F9CD /* snowboarder@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -210,6 +215,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		2B0CEBC61C383A9D00BC9371 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B0CEBC71C383A9D00BC9371 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
 		2B89937416BC1E4400642D1F /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

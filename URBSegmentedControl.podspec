@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
 	}
 	s.source = {
 		:git	=> 'https://github.com/u10int/URBSegmentedControl.git',
-		:tag	=> '1.0.0'
+		:tag	=> s.version.to_s
 	}
 	s.platform			= :ios, '5.0'
 	s.license			= { :type => 'MIT', :file => 'LICENSE' }
