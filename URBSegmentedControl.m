@@ -38,6 +38,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 @implementation URBSegmentedControl {
 	NSInteger _selectedSegmentIndex;
 	NSInteger _lastSelectedSegmentIndex;
+	NSInteger _initInternalFinished;
 }
 
 - (void)initInternal{
@@ -72,6 +73,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
     _backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     _backgroundView.frame = self.frame;
     [self insertSubview:_backgroundView atIndex:0];
+    _initInternalFinished = YES;
 }
 
 - (id)init {
@@ -330,7 +332,7 @@ static CGSize const kURBDefaultSize = {300.0f, 44.0f};
 }
 
 - (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex {
-	if (_selectedSegmentIndex != selectedSegmentIndex) {
+	if (_selectedSegmentIndex != selectedSegmentIndex && _initInternalFinished) {
 		NSParameterAssert(selectedSegmentIndex < (NSInteger)self.items.count && selectedSegmentIndex >= 0);
 		
 		// deselect current segment if selected
